@@ -1,75 +1,69 @@
 CREATE DATABASE moviedb;
 
-CREATE TABLE moviedb.movies(
-	id varchar(10) DEFAULT '',
-    title varchar(100) DEFAULT '',
-    year int NOT NULL,
-    director varchar(100) DEFAULT '',
-    PRIMARY KEY (id)
+USE moviedb;
+
+CREATE TABLE movies (
+    id VARCHAR(10) PRIMARY KEY DEFAULT '',
+    title VARCHAR(100) DEFAULT '',
+    year INTEGER NOT NULL,
+    director VARCHAR(100) DEFAULT ''
 );
 
-CREATE TABLE moviedb.stars(
-	id varchar(10) DEFAULT '',
-    name varchar(100) DEFAULT '',
-    birthYear int,
-    PRIMARY KEY (id)
+CREATE TABLE stars (
+    id VARCHAR(10) PRIMARY KEY DEFAULT '',
+    name VARCHAR(100) DEFAULT '',
+    birthYear INTEGER
 );
 
-CREATE TABLE moviedb.stars_in_movies(
-	starId varchar(10) DEFAULT '',
-    FOREIGN KEY (starId) REFERENCES moviedb.stars(id),
-    
-    movieId varchar(10) DEFAULT '',
-    FOREIGN KEY (movieId) REFERENCES moviedb.movies(id)
+CREATE TABLE stars_in_movies (
+    starId VARCHAR(10) DEFAULT '',
+    movieId VARCHAR(10) DEFAULT '',
+    FOREIGN KEY (starId) REFERENCES stars(id),
+    FOREIGN KEY (movieId) REFERENCES movies(id)
 );
 
-CREATE TABLE moviedb.genres(
-	id int NOT NULL AUTO_INCREMENT,
-    name varchar(32) DEFAULT '',
-    PRIMARY KEY (id)
+CREATE TABLE genres (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(32) DEFAULT ''
 );
 
-CREATE TABLE moviedb.genres_in_movies(
-	genreId int NOT NULL,
-    FOREIGN KEY (genreId) REFERENCES moviedb.genres(id),
-    
-    movieId varchar(10) DEFAULT '',
-    FOREIGN KEY (movieId) REFERENCES moviedb.movies(id)
+CREATE TABLE genres_in_movies (
+    genreId INTEGER NOT NULL,
+    movieId VARCHAR(10) DEFAULT '',
+    FOREIGN KEY (genreId) REFERENCES genres(id),
+    FOREIGN KEY (movieId) REFERENCES movies(id)
 );
 
-CREATE TABLE moviedb.creditcards(
-	id varchar(20) DEFAULT '',
-    firstName varchar(50) DEFAULT '',
-    lastName varchar(50) DEFAULT '',
-    expiration date NOT NULL,
-    PRIMARY KEY (id)
+CREATE TABLE creditcards (
+    id VARCHAR(20) PRIMARY KEY DEFAULT '',
+    firstName VARCHAR(50) DEFAULT '',
+    lastName VARCHAR(50) DEFAULT '',
+    expiration DATE NOT NULL
 );
 
-CREATE TABLE moviedb.customers(
-	id int NOT NULL AUTO_INCREMENT,
-    firstName varchar(50) DEFAULT '',
-    lastName varchar(50) DEFAULT '',
-    ccId varchar(20) DEFAULT '',
-    FOREIGN KEY (ccId) REFERENCES moviedb.creditcards(id),
-    address varchar(200) DEFAULT '',
-    email varchar(50) DEFAULT '',
-    password varchar(50) DEFAULT '',
-    PRIMARY KEY (id)
+CREATE TABLE customers (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    firstName VARCHAR(50) DEFAULT '',
+    lastName VARCHAR(50) DEFAULT '',
+    ccId VARCHAR(20) DEFAULT '',
+    address VARCHAR(200) DEFAULT '',
+    email VARCHAR(50) DEFAULT '',
+    password VARCHAR(20) DEFAULT '',
+    FOREIGN KEY (ccID) REFERENCES creditcards(id)
 );
 
-CREATE TABLE moviedb.sales(
-	id int NOT NULL AUTO_INCREMENT,
-    PRIMARY KEY (id),
-    customerId int NOT NULL,
-    FOREIGN KEY (customerId) REFERENCES moviedb.customers(id),
-    movieId varchar(10) DEFAULT '',
-    FOREIGN KEY (movieId) REFERENCES moviedb.movies(id),
-    saleDate date NOT NULL
+CREATE TABLE sales (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    customerId INTEGER NOT NULL,
+    movieId VARCHAR(10) DEFAULT '',
+    saleDate DATE NOT NULL,
+    FOREIGN KEY (customerId) REFERENCES customers(id),
+    FOREIGN KEY (movieId) REFERENCES movies(id)
 );
 
-CREATE TABLE moviedb.ratings(
-	movieId varchar(50) DEFAULT '',
-    FOREIGN KEY (movieId) REFERENCES moviedb.movies(id),
-    rating float NOT NULL,
-    numVotes int NOT NULL
+CREATE TABLE ratings (
+    movieId VARCHAR(10) DEFAULT '',
+    rating FLOAT NOT NULL,
+    numVotes INTEGER NOT NULL,
+    FOREIGN KEY (movieId) REFERENCES movies(id)
 );

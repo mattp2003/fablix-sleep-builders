@@ -17,9 +17,8 @@ import java.sql.Statement;
 import java.util.*;
 
 
-// Declaring a WebServlet called StarsServlet, which maps to url "/api/stars"
-@WebServlet(name = "Movies", urlPatterns = "/api/movies")
-public class Movies extends HttpServlet {
+@WebServlet(name = "Movie", urlPatterns = "/api/movie")
+public class Movie extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     // Create a dataSource which registered in web.
@@ -37,7 +36,7 @@ public class Movies extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+        String id = request.getParameter("id");
         response.setContentType("application/json"); // Response mime type
 
         // Output stream to STDOUT
@@ -48,50 +47,63 @@ public class Movies extends HttpServlet {
 
             // Declare our statement
             Statement statement = conn.createStatement();
-            int max_movies = 20;
-            String query = "SELECT \n" +
-                    "    m.title,\n" +
-                    "    m.year,\n" +
-                    "    m.director,\n" +
-                    "    SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name DESC SEPARATOR ', '), ',', 3) as genres,\n" +
-                    "    SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars,\n" +
-                    "    r.rating\n" +
-                    "FROM \n" +
-                    "    movies m\n" +
-                    "INNER JOIN \n" +
-                    "    ratings r ON m.id = r.movieId\n" +
-                    "INNER JOIN \n" +
-                    "    stars_in_movies sim ON m.id = sim.movieId\n" +
-                    "INNER JOIN\n" +
-                    "    stars s ON sim.starId = s.id\n" +
-                    "INNER JOIN\n" +
-                    "    genres_in_movies gim ON m.id = gim.movieId\n" +
-                    "INNER JOIN\n" +
-                    "    genres g ON gim.genreId = g.id\n" +
-                    "GROUP BY \n" +
-                    "    m.id, r.rating\n" +
-                    "ORDER BY \n" +
-                    "    r.rating DESC" +
-                    "LIMIT " + max_movies + ";";
-            // Perform the query
-            ResultSet rs = statement.executeQuery(query);
-            JsonArray jsonArray = new JsonArray();
 
-            // Iterate through each row of rs
-            while (rs.next()) {
 
+            //get movie details
+            String movieDataQuery = "SELECT id, rating, numVotes, title, year, director from ratings, movies where movies.id = '" + id + "' and ratings.movieId = movies.id;";
+
+            ResultSet rs = statement.executeQuery(movieDataQuery);
+
+            rs.next();
+
+            JsonObject result = new JsonObject();
+
+            result.addProperty("rating", rs.getString("rating"));
+            result.addProperty("title", rs.getString("title"));
+            result.addProperty("year", rs.getString("year"));
+            result.addProperty("director", rs.getString("director"));
+
+
+
+            //get movie stars
+            String starsQuery = "select starId, name from stars_in_movies, stars where movieId = " + id +" and starId = stars.id;";
+
+            ResultSet starrs = statement.executeQuery(starsQuery);
+
+            JsonArray stars = new JsonArray();
+            while (starrs.next()){
+                JsonObject star = new JsonObject();
+
+                star.addProperty("starId", starrs.getString("starId"));
+                star.addProperty("name", starrs.getString("name"));
+
+                stars.add(star);
             }
-            rs.close();
-            statement.close();
 
-            Map<String, List<String>> stars = new HashMap<>();
-            Map<String, List<String>> genres = new HashMap<>();
 
-            // Log to localhost log
-            request.getServletContext().log("getting " + jsonArray.size() + " results");
+
+            //get movie genres
+            String genresQuery = "select genreId, name from genres_in_movies, genres where movieId = " + id + " and genreId = genres.id;";
+
+            ResultSet genrers = statement.executeQuery(genresQuery);
+
+            JsonArray genres = new JsonArray();
+            while (genrers.next()){
+                JsonObject genre = new JsonObject();
+
+                genre.addProperty("genreId", genrers.getString("genreId"));
+                genre.addProperty("name", genrers.getString("name"));
+
+                stars.add(genre);
+            }
+
+
+
 
             // Write JSON string to output
-            out.write(jsonArray.toString());
+            result.addProperty("stars", stars.toString());
+            result.addProperty("genres", genres.toString());
+            out.write(result.toString());
             // Set response status to 200 (OK)
             response.setStatus(200);
 

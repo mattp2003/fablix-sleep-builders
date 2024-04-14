@@ -50,6 +50,7 @@ public class Movies extends HttpServlet {
             Statement statement = conn.createStatement();
             int max_movies = 20;
             String query = "SELECT \n" +
+                    "    m.id,\n" +
                     "    m.title,\n" +
                     "    m.year,\n" +
                     "    m.director,\n" +
@@ -71,7 +72,7 @@ public class Movies extends HttpServlet {
                     "GROUP BY \n" +
                     "    m.id, r.rating\n" +
                     "ORDER BY \n" +
-                    "    r.rating DESC" +
+                    "    r.rating DESC\n" +
                     "LIMIT " + max_movies + ";";
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
@@ -79,13 +80,27 @@ public class Movies extends HttpServlet {
 
             // Iterate through each row of rs
             while (rs.next()) {
+                String movieID = rs.getString("id");
+                String movieTitle = rs.getString("title");
+                String year = rs.getString("year");
+                String director = rs.getString("director");
+                String stars = rs.getString("stars");
+                String genres = rs.getString("genres");
+                double rating = rs.getDouble("rating");
 
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("id", movieID);
+                jsonObject.addProperty("title", movieTitle);
+                jsonObject.addProperty("year", year);
+                jsonObject.addProperty("director", director);
+                jsonObject.addProperty("stars", stars);
+                jsonObject.addProperty("genres", genres);
+                jsonObject.addProperty("rating", rating);
+
+                jsonArray.add(jsonObject);
             }
             rs.close();
             statement.close();
-
-            Map<String, List<String>> stars = new HashMap<>();
-            Map<String, List<String>> genres = new HashMap<>();
 
             // Log to localhost log
             request.getServletContext().log("getting " + jsonArray.size() + " results");

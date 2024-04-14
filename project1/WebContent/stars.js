@@ -19,7 +19,6 @@ function handleStarResult(resultData) {
     // Populate the star table
     // Find the empty table body by id "star_table_body"
     let starTableBodyElement = jQuery("#star_table_body");
-
     // Iterate through resultData, no more than 10 entries
     for (let i = 0; i < Math.min(10, resultData.length); i++) {
 

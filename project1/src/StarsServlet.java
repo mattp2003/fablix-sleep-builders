@@ -48,11 +48,10 @@ public class StarsServlet extends HttpServlet {
             // Declare our statement
             Statement statement = conn.createStatement();
 
-            String query = "SELECT * from stars";
+            String query = "SELECT * from stars limit 10";
 
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
-
             JsonArray jsonArray = new JsonArray();
 
             // Iterate through each row of rs

@@ -71,7 +71,7 @@ function handleResult(resultData) {
     for (let i = 0; i < stars.length; i++) {
         let rowHTML = "";
         rowHTML += "<tr><th>";
-        rowHTML += "<a>" + stars[i]["name"] + "</a>";
+        rowHTML += "<a href='single-star.html?id=" + stars[i]["starId"] + "'>" + stars[i]["name"] + "</a>";
         rowHTML += "</th></tr>";
 
         // Append the row created to the table body, which will refresh the page

@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
@@ -44,15 +45,13 @@ public class Movie extends HttpServlet {
 
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
-
-            // Declare our statement
-            Statement statement = conn.createStatement();
-
-
             //get movie details
-            String movieDataQuery = "SELECT id, rating, numVotes, title, year, director from ratings, movies where movies.id = '" + id + "' and ratings.movieId = movies.id;";
+            String movieDataQuery = "SELECT id, rating, numVotes, title, year, director from ratings, movies where movies.id = ? and ratings.movieId = movies.id;";
 
-            ResultSet rs = statement.executeQuery(movieDataQuery);
+            PreparedStatement movieStatement = conn.prepareStatement(movieDataQuery);
+            movieStatement.setString(1, id);
+
+            ResultSet rs = movieStatement.executeQuery();
 
             rs.next();
 
@@ -66,9 +65,12 @@ public class Movie extends HttpServlet {
 
 
             //get movie stars
-            String starsQuery = "select starId, name from stars_in_movies, stars where movieId = " + id +" and starId = stars.id;";
+            String starsQuery = "select starId, name from stars_in_movies, stars where movieId = ? and starId = stars.id;";
 
-            ResultSet starrs = statement.executeQuery(starsQuery);
+            PreparedStatement starsStatement = conn.prepareStatement(starsQuery);
+            starsStatement.setString(1, id);
+
+            ResultSet starrs = starsStatement.executeQuery();
 
             JsonArray stars = new JsonArray();
             while (starrs.next()){
@@ -83,9 +85,12 @@ public class Movie extends HttpServlet {
 
 
             //get movie genres
-            String genresQuery = "select genreId, name from genres_in_movies, genres where movieId = " + id + " and genreId = genres.id;";
+            String genresQuery = "select genreId, name from genres_in_movies, genres where movieId = ? and genreId = genres.id;";
 
-            ResultSet genrers = statement.executeQuery(genresQuery);
+            PreparedStatement genresStatement = conn.prepareStatement(genresQuery);
+            genresStatement.setString(1, id);
+
+            ResultSet genrers = genresStatement.executeQuery();
 
             JsonArray genres = new JsonArray();
             while (genrers.next()){
@@ -94,7 +99,7 @@ public class Movie extends HttpServlet {
                 genre.addProperty("genreId", genrers.getString("genreId"));
                 genre.addProperty("name", genrers.getString("name"));
 
-                stars.add(genre);
+                genres.add(genre);
             }
 
 

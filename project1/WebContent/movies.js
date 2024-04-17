@@ -14,10 +14,7 @@
  * @param resultData jsonObject
  */
 function handleMovieResult(resultData) {
-    console.log(resultData);
-
     let moviesTableBodyElement = jQuery("#movies_table_body");
-
     // Iterate through resultData, no more than 10 entries
     for (let i = 0; i < resultData.length; i++) {
         // Concatenate the html tags with resultData jsonObject
@@ -33,15 +30,30 @@ function handleMovieResult(resultData) {
         rowHTML += "<th>" + resultData[i]["year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["director"] + "</th>";
         rowHTML += "<th>" + resultData[i]["genres"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["stars"] + "</th>";
+        let stars = resultData[i]["stars"].split(", ");
+        let stars_id = resultData[i]["stars_id"].split(", ");
+        let stars_info = build_stars(stars, stars_id);
+        rowHTML +=
+            "<th>" +
+            '<a href="single-star.html?id=' + stars_info[stars[0]] + '">'
+            + stars[0] + '</a>; ' +
+            '<a href="single-star.html.html?id=' + stars_info[stars[1]] + '">'
+            + stars[1] + '</a>; ' +
+            '<a href="single-star.html.html?id=' + stars_info[stars[2]] + '">'
+            + stars[2] + '</a>' +
+            "</th>";
         rowHTML += "<th>" + resultData[i]["rating"] + "</th>";
         rowHTML += "</tr>";
-
         // Append the row created to the table body, which will refresh the page
         moviesTableBodyElement.append(rowHTML);
     }
 }
 
+function build_stars(stars, stars_id) {
+    let stars_dict = {};
+    for (let i = 0; i < stars.length; i++) stars_dict[stars[i]] = stars_id[i];
+    return stars_dict;
+}
 
 /**
  * Once this .js is loaded, following scripts will be executed by the browser

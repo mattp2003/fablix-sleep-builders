@@ -56,6 +56,7 @@ public class Movies extends HttpServlet {
                     "    m.director,\n" +
                     "    SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name DESC SEPARATOR ', '), ',', 3) as genres,\n" +
                     "    SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars,\n" +
+                    "    SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.id ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars_id,\n" +
                     "    r.rating\n" +
                     "FROM \n" +
                     "    movies m\n" +
@@ -85,6 +86,7 @@ public class Movies extends HttpServlet {
                 String year = rs.getString("year");
                 String director = rs.getString("director");
                 String stars = rs.getString("stars");
+                String stars_id = rs.getString("stars_id");
                 String genres = rs.getString("genres");
                 double rating = rs.getDouble("rating");
 
@@ -94,6 +96,7 @@ public class Movies extends HttpServlet {
                 jsonObject.addProperty("year", year);
                 jsonObject.addProperty("director", director);
                 jsonObject.addProperty("stars", stars);
+                jsonObject.addProperty("stars_id", stars_id);
                 jsonObject.addProperty("genres", genres);
                 jsonObject.addProperty("rating", rating);
 

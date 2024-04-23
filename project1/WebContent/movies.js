@@ -14,8 +14,6 @@
  * @param resultData jsonObject
  */
 function handleMovieResult(resultData) {
-    console.log(resultData);
-
     let moviesTableBodyElement = jQuery("#movies_table_body");
 
     // Iterate through resultData, no more than 10 entries

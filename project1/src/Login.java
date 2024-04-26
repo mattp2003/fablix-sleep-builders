@@ -1,44 +1,81 @@
 import com.google.gson.JsonObject;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class Login extends HttpServlet {
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
+    private DataSource dataSource;
+
+    public void init(ServletConfig config) {
+        try {
+            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+    }
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String username = request.getParameter("username");
+        String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        /* This example only allows username/password to be test/test
-        /  in the real project, you should talk to the database to verify username/password
-        */
-        JsonObject responseJsonObject = new JsonObject();
-        if (username.equals("anteater") && password.equals("123456")) {
-            // Login success:
+        response.setContentType("application/json"); // Response mime type
 
-            // set this user into the session
-            request.getSession().setAttribute("user", new User(username));
+        // Output stream to STDOUT
+        PrintWriter out = response.getWriter();
 
-            responseJsonObject.addProperty("status", "success");
-            responseJsonObject.addProperty("message", "success");
+        try (Connection conn = dataSource.getConnection()){
+            String query = "SELECT password from customers where email=?;";
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setString(1, email);
+            ResultSet rs = statement.executeQuery();
 
-        } else {
-            // Login fail
-            responseJsonObject.addProperty("status", "fail");
-            // Log to localhost log
-            request.getServletContext().log("Login failed");
-            // sample error messages. in practice, it is not a good idea to tell user which one is incorrect/not exist.
-            if (!username.equals("anteater")) {
-                responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
-            } else {
-                responseJsonObject.addProperty("message", "incorrect password");
+            boolean user_exists = rs.next();
+
+            JsonObject responseJsonObject = new JsonObject();
+            if (!user_exists){
+                responseJsonObject.addProperty("status", "fail");
+                request.getServletContext().log("Login failed");
+                responseJsonObject.addProperty("message", "user with email " + email + " doesn't exist");
             }
+            else{
+                String queriedPassword = rs.getString("password");
+                if (password.equals(queriedPassword)){
+                    request.getSession().setAttribute("user", new User(email));
+                    responseJsonObject.addProperty("status", "success");
+                    responseJsonObject.addProperty("message", "success");
+                }
+                else{
+                    responseJsonObject.addProperty("status", "fail");
+                    request.getServletContext().log("Login failed");
+                    responseJsonObject.addProperty("message", "incorrect password");
+                }
+            }
+            response.getWriter().write(responseJsonObject.toString());
+        } catch (Exception e) {
+
+            // Write error message JSON object to output
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("errorMessage", e.getMessage());
+            out.write(jsonObject.toString());
+
+            // Set response status to 500 (Internal Server Error)
+            response.setStatus(500);
+        } finally {
+            out.close();
         }
-        response.getWriter().write(responseJsonObject.toString());
+
     }
 }

@@ -5,7 +5,8 @@ let login_form = $("#login_form");
  * @param resultDataString jsonObject
  */
 function handleLoginResult(resultDataString) {
-    let resultDataJson = JSON.parse(resultDataString);
+    console.log(resultDataString);
+    let resultDataJson = resultDataString;
 
     console.log("handle login response");
     console.log(resultDataJson);

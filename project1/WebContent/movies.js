@@ -14,6 +14,7 @@
  * @param resultData jsonObject
  */
 function handleMovieResult(resultData) {
+    console.log(resultData)
     let moviesTableBodyElement = jQuery("#movies_table_body");
     // Iterate through resultData, no more than 10 entries
     for (let i = 0; i < resultData.length; i++) {
@@ -45,6 +46,7 @@ function handleMovieResult(resultData) {
         rowHTML += "</th>"
 
         rowHTML += "<th>" + resultData[i]["rating"] + "</th>";
+        //console.log(resultData[i]["rating"])
         rowHTML += "</tr>";
         // Append the row created to the table body, which will refresh the page
         moviesTableBodyElement.append(rowHTML);
@@ -74,11 +76,36 @@ function getParameterByName(target) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+function handleGenres(data){
+    let genres = data["genres"]
+    //console.log(genres)
+
+    let table = jQuery("#genre_body");
+    for (let i = 0; i < genres.length; i++){
+        let rowHTML = "";
+        rowHTML += "<tr><th>";
+        rowHTML += "<a href='./movies.html?genre=" + genres[i] + "'>" + genres[i] + "</a>";
+        rowHTML += "</th></tr>";
+
+        table.append(rowHTML);
+        //console.log(rowHTML);
+    }
+}
+
+
+jQuery.ajax({
+    dataType: "json",  // Setting return data type
+    method: "GET",// Setting request method
+    url: "api/genres",
+    success: (resultData) => handleGenres(resultData) // Setting callback function to handle data returned successfully by the SingleStarServlet
+});
+
+
 let url = "api/movies"
 
 const query_params = new Map()
 const genre = getParameterByName("genre")
-console.log(genre)
+//console.log(genre)
 if (genre){
     query_params.set("genre",genre)
 }
@@ -87,7 +114,7 @@ if (startsWith){
     query_params.set("startsWith", startsWith)
 }
 let c = 0
-console.log(query_params)
+//console.log(query_params)
 query_params.forEach((value, key) => {
     console.log(key)
     if (c === 0){
@@ -98,8 +125,7 @@ query_params.forEach((value, key) => {
     }
     url += key + "=" + value
 })
-console.log(url)
-
+//console.log(url)
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */

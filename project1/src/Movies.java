@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
@@ -37,46 +38,37 @@ public class Movies extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         response.setContentType("application/json"); // Response mime type
+
+        //set parameters default values
+        int max_movies = 20;
+        String genre = "g.id";
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
+            //replace parameters if in request query
+            String g = request.getParameter("genre");
+            if (g != null){
+                genre = "'" + g + "'";
+            }
 
+            String n = request.getParameter("n");
+            if (n != null){
+                max_movies = Integer.parseInt(n);
+            }
+
+            String query = "SELECT m.id, m.title, m.year, m.director, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT m.name ORDER BY m.name DESC SEPARATOR ', '), ',', 3) as genres, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.id ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars_id, m.rating FROM (select movies.id, title, year, director, rating, genreId, name from movies LEFT JOIN ratings as r ON movies.id = r.movieId INNER JOIN genres_in_movies gim ON movies.id = gim.movieId INNER JOIN genres g ON gim.genreId = g.id and g.id = " + genre + " ORDER BY rating DESC LIMIT " + max_movies + " ) as m INNER JOIN stars_in_movies sim ON m.id = sim.movieId INNER JOIN stars s ON sim.starId = s.id GROUP BY m.id, m.rating ORDER BY \tm.rating desc;";
+            //System.out.println(query);
             // Declare our statement
-            Statement statement = conn.createStatement();
-            int max_movies = 20;
-            String query = "SELECT \n" +
-                    "    m.id,\n" +
-                    "    m.title,\n" +
-                    "    m.year,\n" +
-                    "    m.director,\n" +
-                    "    SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name DESC SEPARATOR ', '), ',', 3) as genres,\n" +
-                    "    SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars,\n" +
-                    "    SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.id ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars_id,\n" +
-                    "    r.rating\n" +
-                    "FROM \n" +
-                    "    movies m\n" +
-                    "INNER JOIN \n" +
-                    "    ratings r ON m.id = r.movieId\n" +
-                    "INNER JOIN \n" +
-                    "    stars_in_movies sim ON m.id = sim.movieId\n" +
-                    "INNER JOIN\n" +
-                    "    stars s ON sim.starId = s.id\n" +
-                    "INNER JOIN\n" +
-                    "    genres_in_movies gim ON m.id = gim.movieId\n" +
-                    "INNER JOIN\n" +
-                    "    genres g ON gim.genreId = g.id\n" +
-                    "GROUP BY \n" +
-                    "    m.id, r.rating\n" +
-                    "ORDER BY \n" +
-                    "    r.rating DESC\n" +
-                    "LIMIT " + max_movies + ";";
+            PreparedStatement statement = conn.prepareStatement(query);
+            //statement.setString(1, genre);
+
+            String s = statement.toString();
             // Perform the query
-            ResultSet rs = statement.executeQuery(query);
+            ResultSet rs = statement.executeQuery();
             JsonArray jsonArray = new JsonArray();
 
             // Iterate through each row of rs

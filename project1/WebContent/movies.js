@@ -33,15 +33,17 @@ function handleMovieResult(resultData) {
         let stars = resultData[i]["stars"].split(", ");
         let stars_id = resultData[i]["stars_id"].split(", ");
         let stars_info = build_stars(stars, stars_id);
-        rowHTML +=
-            "<th>" +
-            '<a href="single-star.html?id=' + stars_info[stars[0]] + '">'
-            + stars[0] + '</a>; ' +
-            '<a href="single-star.html.html?id=' + stars_info[stars[1]] + '">'
-            + stars[1] + '</a>; ' +
-            '<a href="single-star.html.html?id=' + stars_info[stars[2]] + '">'
-            + stars[2] + '</a>' +
-            "</th>";
+
+        rowHTML += "<th>"
+        for (let i = 0; i < stars.length; i++){
+            if (i !== 0){
+                rowHTML += "; "
+            }
+            rowHTML += '<a href="single-star.html?id=' + stars_info[stars[i]] + '">'
+                + stars[i] + '</a>'
+        }
+        rowHTML += "</th>"
+
         rowHTML += "<th>" + resultData[i]["rating"] + "</th>";
         rowHTML += "</tr>";
         // Append the row created to the table body, which will refresh the page
@@ -55,6 +57,49 @@ function build_stars(stars, stars_id) {
     return stars_dict;
 }
 
+
+function getParameterByName(target) {
+    // Get request URL
+    let url = window.location.href;
+    // Encode target parameter name to url encoding
+    target = target.replace(/[\[\]]/g, "\\$&");
+
+    // Ues regular expression to find matched parameter value
+    let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+
+    // Return the decoded parameter value
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+let url = "api/movies"
+
+const query_params = new Map()
+const genre = getParameterByName("genre")
+console.log(genre)
+if (genre){
+    query_params.set("genre",genre)
+}
+const startsWith = getParameterByName("startsWith")
+if (startsWith){
+    query_params.set("startsWith", startsWith)
+}
+let c = 0
+console.log(query_params)
+query_params.forEach((value, key) => {
+    console.log(key)
+    if (c === 0){
+        url += "?"
+    }
+    else{
+        url += "&"
+    }
+    url += key + "=" + value
+})
+console.log(url)
+
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
@@ -63,6 +108,6 @@ function build_stars(stars, stars_id) {
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
-    url: "api/movies", // Setting request url, which is mapped by StarsServlet in Stars.java
+    url: url, // Setting request url, which is mapped by StarsServlet in Stars.java
     success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });

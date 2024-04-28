@@ -78,7 +78,7 @@ function getParameterByName(target) {
 
 function handleStarts(){
     let table = jQuery("#starts-body")
-    const starts = "0123456789abcdefghijklmnopqrstuvwxyz"
+    const starts = "0123456789abcdefghijklmnopqrstuvwxyz*"
 
     for (let i = 0; i < starts.length; i++){
         let rowHTML = "";

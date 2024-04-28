@@ -43,6 +43,7 @@ public class Movies extends HttpServlet {
         //set parameters default values
         int max_movies = 20;
         String genre = "g.name";
+        String startsWith = "'%'";
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
@@ -60,8 +61,13 @@ public class Movies extends HttpServlet {
                 max_movies = Integer.parseInt(n);
             }
 
+            String sw = request.getParameter("startsWith");
+            if (sw != null){
+                startsWith = "'" + sw + "%'";
+            }
+
             //String query = "SELECT m.id, m.title, m.year, m.director, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT m.name ORDER BY m.name DESC SEPARATOR ', '), ',', 3) as genres, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.id ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars_id, m.rating FROM (select movies.id, title, year, director, rating, genreId, name from movies LEFT JOIN ratings as r ON movies.id = r.movieId INNER JOIN genres_in_movies gim ON movies.id = gim.movieId INNER JOIN genres g ON gim.genreId = g.id and g.name = " + genre + " ORDER BY rating DESC LIMIT " + max_movies + " ) as m INNER JOIN stars_in_movies sim ON m.id = sim.movieId INNER JOIN stars s ON sim.starId = s.id GROUP BY m.id, m.rating ORDER BY \tm.rating desc;";
-            String query = "SELECT m.id, m.title, m.year, m.director, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name DESC SEPARATOR ', '), ',', 3) as genres, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.id ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars_id, m.rating FROM (select movies.id, title, year, director, rating from movies LEFT JOIN ratings as r ON movies.id = r.movieId INNER JOIN genres_in_movies gim ON movies.id = gim.movieId INNER JOIN genres g ON gim.genreId = g.id and g.name = " + genre + " ORDER BY rating DESC LIMIT " + max_movies + " ) as m INNER JOIN stars_in_movies sim ON m.id = sim.movieId INNER JOIN stars s ON sim.starId = s.id INNER JOIN genres_in_movies gim ON m.id = gim.movieId INNER JOIN genres g ON gim.genreId = g.id GROUP BY m.id, m.rating ORDER BY m.rating desc;\n";
+            String query = "SELECT m.id, m.title, m.year, m.director, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name DESC SEPARATOR ', '), ',', 3) as genres, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.id ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars_id, m.rating FROM (select distinct movies.id, title, year, director, rating from movies LEFT JOIN ratings as r ON movies.id = r.movieId INNER JOIN genres_in_movies gim ON movies.id = gim.movieId INNER JOIN genres g ON gim.genreId = g.id and g.name = " + genre + " and movies.title LIKE " + startsWith +  " ORDER BY rating DESC LIMIT " + max_movies + " ) as m INNER JOIN stars_in_movies sim ON m.id = sim.movieId INNER JOIN stars s ON sim.starId = s.id INNER JOIN genres_in_movies gim ON m.id = gim.movieId INNER JOIN genres g ON gim.genreId = g.id GROUP BY m.id, m.rating ORDER BY m.rating desc;\n";
             //System.out.println(query);
             // Declare our statement
             PreparedStatement statement = conn.prepareStatement(query);

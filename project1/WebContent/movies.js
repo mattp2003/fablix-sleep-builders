@@ -76,6 +76,19 @@ function getParameterByName(target) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+function handleStarts(){
+    let table = jQuery("#starts-body")
+    const starts = "0123456789abcdefghijklmnopqrstuvwxyz"
+
+    for (let i = 0; i < starts.length; i++){
+        let rowHTML = "";
+        rowHTML += "<tr><th>";
+        rowHTML += "<a href='./movies.html?startsWith=" + starts[i] + "'>" + starts[i] + "</a>";
+        rowHTML += "</th></tr>";
+        table.append(rowHTML);
+    }
+}
+
 function handleGenres(data){
     let genres = data["genres"]
     //console.log(genres)
@@ -92,6 +105,7 @@ function handleGenres(data){
     }
 }
 
+handleStarts()
 
 jQuery.ajax({
     dataType: "json",  // Setting return data type

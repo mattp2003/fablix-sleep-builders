@@ -30,6 +30,7 @@ function Order(action, id, title){
 function handleMovieResult(resultData) {
     console.log(resultData)
     let moviesTableBodyElement = jQuery("#movies_table_body");
+    moviesTableBodyElement.empty();
     // Iterate through resultData, no more than 10 entries
     for (let i = 0; i < resultData.length; i++) {
         // Concatenate the html tags with resultData jsonObject

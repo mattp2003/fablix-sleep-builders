@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pay</title>
+</head>
+<body>
+
+<h1>Cart</h1>
+
+<table id=nav_table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Navigation</th>
+    </tr>
+    </thead>
+
+    <tbody id=nav_body>
+    <tr>
+        <th>
+            <a href="movies.html">Movies</a>
+        </th>
+    </tr>
+    <tr>
+        <th>
+            <a href="stars.html">Stars</a>
+        </th>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Total Price:</h2>
+<h1 id="total">0</h1>
+
+<form id="payment-form" method="post" action="#">
+    <label><b>First Name</b></label>
+    <label>
+        <input name="firstName" placeholder="Enter First Name" type="text">
+    </label>
+    <label><b>Last Name</b></label>
+    <label>
+        <input name="lastName" placeholder="Enter Last Name" type="text">
+    </label>
+    <label><b>Credit Card Number</b></label>
+    <label>
+        <input name="creditCard"  type="text">
+    </label>
+
+    <label><b>Expiration Date</b></label>
+    <label>
+        <input name="date"  type="date">
+    </label>
+
+    <br>
+    <input type="submit" value="Login">
+
+    <h3 id="warning"></h3>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="pay.js"></script>
+
+
+</body>
+</html>

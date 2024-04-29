@@ -133,3 +133,39 @@ jQuery.ajax({
     url: url + window.location.search,
     success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
+
+var sortState = {
+    title: "asc", // Default sort order for title
+    rating: "asc" // Default sort order for rating
+};
+
+$("#sort_title").on("click", function() {
+    // Toggle sort order for title
+    sortState.title = sortState.title === "asc" ? "desc" : "asc";
+    sortMovies("title", sortState.title);
+});
+
+$("#sort_rating").on("click", function() {
+    // Toggle sort order for rating
+    sortState.rating = sortState.rating === "asc" ? "desc" : "asc";
+    sortMovies("rating", sortState.rating);
+});
+
+function sortMovies(sortBy, sortOrder) {
+    // Construct the query with the sorting parameters
+    let query = "";
+    if (window.location.search.length === 0) {
+        query = `api/movies?&sortBy=${sortBy}&sortOrder=${sortOrder}`;
+    }
+    else {
+        query = "api/movies" + window.location.search + `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
+    }
+
+    // Make the AJAX call to the MoviesServlet
+    jQuery.ajax({
+        dataType: "json",
+        method: "GET",
+        url: query,
+        success: (resultData) => handleMovieResult(resultData)
+    });
+}

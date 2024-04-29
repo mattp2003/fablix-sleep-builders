@@ -60,12 +60,23 @@ public class Movies extends HttpServlet {
             String searchYear = request.getParameter("year");
             String searchDirector = request.getParameter("director");
             String searchStarName = request.getParameter("star");
-            System.out.println("Title: " + searchTitle + " Year: " + searchYear + " Director: " + searchDirector + " Star's Name: " + searchStarName);
+//            System.out.println("Title: " + searchTitle + " Year: " + searchYear + " Director: " + searchDirector + " Star's Name: " + searchStarName);
             PreparedStatement statement;
 
+            String sortBy = request.getParameter("sortBy");
+            String sortOrder = request.getParameter("sortOrder");
+            System.out.println("Sort By: " + sortBy + " SortOrder: " + sortOrder);
+            if (sortBy == null || sortOrder == null) {
+                sortBy = "rating"; // Default column to sort by
+                sortOrder = "desc"; // Default sort order
+            }
+
             boolean isSearched = (searchTitle != null && !searchTitle.isEmpty()) || (searchYear != null && !searchYear.isEmpty())|| (searchDirector != null && !searchDirector.isEmpty()) || (searchStarName != null && !searchStarName.isEmpty());
+            StringBuilder queryBuilder;
+
             if (isSearched){
-                StringBuilder queryBuilder = new StringBuilder();
+                System.out.println("Search Mode");
+                queryBuilder = new StringBuilder();
                 queryBuilder.append("SELECT m.id, m.title, m.year, m.director, ");
                 queryBuilder.append("SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name DESC SEPARATOR ', '), ',', 3) as genres, ");
                 queryBuilder.append("SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars, ");
@@ -90,13 +101,25 @@ public class Movies extends HttpServlet {
                     queryBuilder.append("AND s.name LIKE ? ");
                 }
 
-                queryBuilder.append("ORDER BY rating DESC LIMIT ? ) as m ");
+//                queryBuilder.append("ORDER BY rating DESC LIMIT ? ) as m ");
+
+                if ("title".equals(sortBy)) {
+                    queryBuilder.append("ORDER BY title ").append(sortOrder).append(", rating ").append(sortOrder).append(" LIMIT ? ) as m ");
+                } else if ("rating".equals(sortBy)) {
+                    queryBuilder.append("ORDER BY rating ").append(sortOrder).append(", title ").append(sortOrder).append(" LIMIT ? ) as m ");
+                }
+
                 queryBuilder.append("INNER JOIN stars_in_movies sim ON m.id = sim.movieId ");
                 queryBuilder.append("INNER JOIN stars s ON sim.starId = s.id ");
                 queryBuilder.append("INNER JOIN genres_in_movies gim ON m.id = gim.movieId ");
                 queryBuilder.append("INNER JOIN genres g ON gim.genreId = g.id ");
                 queryBuilder.append("GROUP BY m.id, m.rating ");
-                queryBuilder.append("ORDER BY m.rating desc;");
+
+                if ("title".equals(sortBy)) {
+                    queryBuilder.append("ORDER BY m.title ").append(sortOrder).append(", m.rating ").append(sortOrder).append(";");
+                } else if ("rating".equals(sortBy)) {
+                    queryBuilder.append("ORDER BY m.rating ").append(sortOrder).append(", m.title ").append(sortOrder).append(";");
+                }
 
                 query = queryBuilder.toString();
 
@@ -116,6 +139,7 @@ public class Movies extends HttpServlet {
                 }
                 statement.setInt(paramIndex, max_movies);
             } else {
+                System.out.println("Browse Mode");
                 String g = request.getParameter("genre");
                 if (g != null && !g.trim().isEmpty()){
                     genre = "'" + g + "'";
@@ -130,22 +154,73 @@ public class Movies extends HttpServlet {
                         startsWith = "'" + sw + "%'";
                     }
                 }
-                query = "SELECT m.id, m.title, m.year, m.director, " +
-                        "SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name DESC SEPARATOR ', '), ',', 3) as genres, " +
-                        "SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars, " +
-                        "SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.id ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars_id, m.rating " +
-                        "FROM (select distinct movies.id, title, year, director, rating from movies " +
-                        "LEFT JOIN ratings as r ON movies.id = r.movieId " +
-                        "INNER JOIN genres_in_movies gim ON movies.id = gim.movieId " +
-                        "INNER JOIN genres g ON gim.genreId = g.id and g.name = " + genre + " and movies.title LIKE " + startsWith +  " " +
-                        "ORDER BY rating DESC LIMIT " + max_movies + " ) as m " +
-                        "INNER JOIN stars_in_movies sim ON m.id = sim.movieId " +
-                        "INNER JOIN stars s ON sim.starId = s.id " +
-                        "INNER JOIN genres_in_movies gim ON m.id = gim.movieId " +
-                        "INNER JOIN genres g ON gim.genreId = g.id " +
-                        "GROUP BY m.id, m.rating " +
-                        "ORDER BY m.rating desc;\n";
+                queryBuilder = new StringBuilder();
+                queryBuilder.append("SELECT m.id, m.title, m.year, m.director, ")
+                        .append("SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name DESC SEPARATOR ', '), ',', 3) as genres, ")
+                        .append("SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars, ")
+                        .append("SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.id ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars_id, m.rating ")
+                        .append("FROM (select distinct movies.id, title, year, director, rating from movies ")
+                        .append("LEFT JOIN ratings as r ON movies.id = r.movieId ")
+                        .append("INNER JOIN genres_in_movies gim ON movies.id = gim.movieId ")
+                        .append("INNER JOIN genres g ON gim.genreId = g.id ");
+                if (g != null && !g.trim().isEmpty()) {
+                    queryBuilder.append("and g.name = ? ");
+                }
+                if (sw != null && !sw.trim().isEmpty()) {
+                    if ("*".equals(sw)) {
+                        queryBuilder.append("and title not regexp '^[A-Za-z0-9].*$' ");
+                    } else {
+                        queryBuilder.append("and movies.title LIKE ? ");
+                    }
+                }
+
+//                queryBuilder.append("ORDER BY rating DESC LIMIT ? ) as m ");
+                if ("title".equals(sortBy)) {
+                    queryBuilder.append("ORDER BY title ").append(sortOrder).append(", rating ").append(sortOrder).append(" LIMIT ? ) as m ");
+                } else if ("rating".equals(sortBy)) {
+                    queryBuilder.append("ORDER BY rating ").append(sortOrder).append(", title ").append(sortOrder).append(" LIMIT ? ) as m ");
+                }
+
+                queryBuilder.append("INNER JOIN stars_in_movies sim ON m.id = sim.movieId ")
+                        .append("INNER JOIN stars s ON sim.starId = s.id ")
+                        .append("INNER JOIN genres_in_movies gim ON m.id = gim.movieId ")
+                        .append("INNER JOIN genres g ON gim.genreId = g.id ")
+                        .append("GROUP BY m.id, m.rating ");
+
+                if ("title".equals(sortBy)) {
+                    queryBuilder.append("ORDER BY m.title ").append(sortOrder).append(", m.rating ").append(sortOrder).append(";");
+                } else if ("rating".equals(sortBy)) {
+                    queryBuilder.append("ORDER BY m.rating ").append(sortOrder).append(", m.title ").append(sortOrder).append(";");
+                }
+
+                query = queryBuilder.toString();
+
+
+//                String query = queryBuilder.toString();
+//                query = "SELECT m.id, m.title, m.year, m.director, " +
+//                        "SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name DESC SEPARATOR ', '), ',', 3) as genres, " +
+//                        "SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars, " +
+//                        "SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.id ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars_id, m.rating " +
+//                        "FROM (select distinct movies.id, title, year, director, rating from movies " +
+//                        "LEFT JOIN ratings as r ON movies.id = r.movieId " +
+//                        "INNER JOIN genres_in_movies gim ON movies.id = gim.movieId " +
+//                        "INNER JOIN genres g ON gim.genreId = g.id and g.name = " + genre + " and movies.title LIKE " + startsWith +  " " +
+//                        "ORDER BY rating DESC LIMIT " + max_movies + " ) as m " +
+//                        "INNER JOIN stars_in_movies sim ON m.id = sim.movieId " +
+//                        "INNER JOIN stars s ON sim.starId = s.id " +
+//                        "INNER JOIN genres_in_movies gim ON m.id = gim.movieId " +
+//                        "INNER JOIN genres g ON gim.genreId = g.id " +
+//                        "GROUP BY m.id, m.rating " +
+//                        "ORDER BY m.rating desc;\n";
                 statement = conn.prepareStatement(query);
+                int paramIndex = 1;
+                if (g != null && !g.trim().isEmpty()) {
+                    statement.setString(paramIndex++, g);
+                }
+                if (sw != null && !"*".equals(sw)) {
+                    statement.setString(paramIndex++, sw + "%");
+                }
+                statement.setInt(paramIndex, max_movies);
             }
 
             //String query = "SELECT m.id, m.title, m.year, m.director, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT m.name ORDER BY m.name DESC SEPARATOR ', '), ',', 3) as genres, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.name ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars, SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT s.id ORDER BY s.name DESC SEPARATOR ', '), ',', 3) as stars_id, m.rating FROM (select movies.id, title, year, director, rating, genreId, name from movies LEFT JOIN ratings as r ON movies.id = r.movieId INNER JOIN genres_in_movies gim ON movies.id = gim.movieId INNER JOIN genres g ON gim.genreId = g.id and g.name = " + genre + " ORDER BY rating DESC LIMIT " + max_movies + " ) as m INNER JOIN stars_in_movies sim ON m.id = sim.movieId INNER JOIN stars s ON sim.starId = s.id GROUP BY m.id, m.rating ORDER BY \tm.rating desc;";

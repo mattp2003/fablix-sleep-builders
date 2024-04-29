@@ -65,7 +65,7 @@ public class Movie extends HttpServlet {
 
 
             //get movie stars
-            String starsQuery = "select starId, name from stars_in_movies, stars where movieId = ? and starId = stars.id;";
+            String starsQuery = "select name, starId from (select name, s.starId, count(name) as c from (select starId, name from stars_in_movies, stars where movieId = ? and starId = stars.id)s inner join stars_in_movies sim where sim.starId = s.starId group by name, s.starId order by c desc, name asc)a;";
 
             PreparedStatement starsStatement = conn.prepareStatement(starsQuery);
             starsStatement.setString(1, id);

@@ -144,16 +144,43 @@ console.log("This is the url", some_url);
  * Once this .js is loaded, following scripts will be executed by the browser
  */
 
+//has no parameters, load parameters from session history and reload site
+function handleHistory(data){
+    console.log(data);
+    if (data.length > 0){
+        location.href = "./movies.html" + "?" + data;
+    }
+    else{
+        jQuery.ajax({
+            dataType: "json", // Setting return data type
+            method: "GET", // Setting request method
+            // url: "/api/movies" + ,
+            url: url + window.location.search,
+            success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+        });
+       }
+}
+console.log(some_url);
+if (some_url === url){
+    jQuery.ajax({
+        dataType: "text", // Setting return data type
+        method: "GET", // Setting request method
+        // url: "/api/movies" + ,
+        url: "api/movieHistory",
+        success: (resultData) => handleHistory(resultData)
+    });
+}
+else{
+    // Makes the HTTP GET request and registers on success callback function handleStarResult
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        // url: "/api/movies" + ,
+        url: url + window.location.search,
+        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    });
 
-// Makes the HTTP GET request and registers on success callback function handleStarResult
-jQuery.ajax({
-    dataType: "json", // Setting return data type
-    method: "GET", // Setting request method
-    // url: "/api/movies" + ,
-    url: url + window.location.search,
-    success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
-});
-
+}
 var sortState = {
     title: "asc",
     rating: "asc"

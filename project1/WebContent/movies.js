@@ -234,8 +234,7 @@ function fetchNumMovies(diff) {
     query = `${url}?${params.toString()}`;
 
     console.log("./movies.html?" + params.toString());
-    page_url = "./movies.html?" + params.toString()
-    page_url.replace("page=")
+    page_url = "./movies.html?" + params.toString();
     location.href = "./movies.html?" + params.toString()
 
 }

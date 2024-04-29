@@ -9,6 +9,20 @@
  *      3. Populate the data to correct html elements.
  */
 
+function Order(action, id, title){
+    let t = title.replace(' ', '%20');
+    orderData = "action=" + action + "&id=" + id + "&title=" + title;
+    //console.log(orderData)
+
+    jQuery.ajax("api/cart", {
+        method: "POST",
+        data: orderData,
+        success: resultData => {
+           //console.log(resultData);
+           alert(title + " has been added to cart")
+        }
+    });
+}
 
 /**
  * Retrieve parameter from request URL, matching by parameter name
@@ -30,7 +44,7 @@ function getParameterByName(target) {
     // Return the decoded parameter value
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
-
+let movieId = getParameterByName('id');
 /**
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
  * @param resultData jsonObject
@@ -49,6 +63,8 @@ function handleResult(resultData) {
         "<p>Director: " + resultData["director"] + "</p>");
 
 
+    let cart_add = jQuery("#cart-add")
+    cart_add.on("click", () => Order("increase", movieId, resultData["title"]));
 
     let genreTableBodyElement = jQuery("#genre_table_body");
     const genres = JSON.parse(resultData["genres"]);
@@ -77,6 +93,7 @@ function handleResult(resultData) {
         // Append the row created to the table body, which will refresh the page
         starsTableBodyElement.append(rowHTML);
     }
+
 }
 
 /**
@@ -84,8 +101,7 @@ function handleResult(resultData) {
  */
 
 // Get id from URL
-let movieId = getParameterByName('id');
-console.log(movieId);
+//console.log(movieId);
 // Makes the HTTP GET request and registers on success callback function handleResult
 jQuery.ajax({
     dataType: "json",  // Setting return data type

@@ -8,6 +8,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -38,6 +40,9 @@ public class Movies extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        session.setAttribute("history", request.getQueryString());
+
         response.setContentType("application/json"); // Response mime type
 
         //set parameters default values
@@ -65,7 +70,7 @@ public class Movies extends HttpServlet {
 
             String sortBy = request.getParameter("sortBy");
             String sortOrder = request.getParameter("sortOrder");
-            System.out.println("Sort By: " + sortBy + " SortOrder: " + sortOrder);
+            //System.out.println("Sort By: " + sortBy + " SortOrder: " + sortOrder);
             if (sortBy == null || sortOrder == null) {
                 sortBy = "rating"; // Default column to sort by
                 sortOrder = "desc"; // Default sort order
@@ -75,7 +80,7 @@ public class Movies extends HttpServlet {
             StringBuilder queryBuilder;
 
             if (isSearched){
-                System.out.println("Search Mode");
+                //System.out.println("Search Mode");
                 queryBuilder = new StringBuilder();
                 queryBuilder.append("SELECT m.id, m.title, m.year, m.director, ");
                 queryBuilder.append("SUBSTRING_INDEX(GROUP_CONCAT(DISTINCT g.name ORDER BY g.name DESC SEPARATOR ', '), ',', 3) as genres, ");
@@ -86,6 +91,8 @@ public class Movies extends HttpServlet {
                 queryBuilder.append("LEFT JOIN ratings as r ON movies.id = r.movieId ");
                 queryBuilder.append("INNER JOIN genres_in_movies gim ON movies.id = gim.movieId ");
                 queryBuilder.append("INNER JOIN genres g ON gim.genreId = g.id ");
+                queryBuilder.append("INNER JOIN stars_in_movies sim ON movies.id = sim.movieId ");
+                queryBuilder.append("INNER JOIN stars s ON sim.starId = s.id ");
                 queryBuilder.append("WHERE 1=1 ");
 
                 if (searchTitle != null && !searchTitle.isEmpty()) {
@@ -137,9 +144,11 @@ public class Movies extends HttpServlet {
                 if (searchStarName != null && !searchStarName.isEmpty()) {
                     statement.setString(paramIndex++, "%" + searchStarName + "%");
                 }
+
                 statement.setInt(paramIndex, max_movies);
+                System.out.println(statement.toString());
             } else {
-                System.out.println("Browse Mode");
+                //System.out.println("Browse Mode");
                 String g = request.getParameter("genre");
                 if (g != null && !g.trim().isEmpty()){
                     genre = "'" + g + "'";
@@ -194,7 +203,7 @@ public class Movies extends HttpServlet {
                 }
 
                 query = queryBuilder.toString();
-                System.out.println(query);
+                //System.out.println(query);
 
 //                String query = queryBuilder.toString();
 //                query = "SELECT m.id, m.title, m.year, m.director, " +

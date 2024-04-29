@@ -32,9 +32,9 @@ function handleMovieResult(resultData) {
     let moviesTableBodyElement = jQuery("#movies_table_body");
     moviesTableBodyElement.empty();
     // Iterate through resultData, no more than 10 entries
-    // if (resultData.length === 0 && currentPage > 1){
-    //     location.href = ""
-    // }
+    if (resultData.length === 0 && parseInt(getParameterByName("page") ) > 1){
+        goToPreviousPage();
+    }
     for (let i = 0; i < resultData.length; i++) {
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
@@ -81,21 +81,21 @@ function build_stars(stars, stars_id) {
 }
 
 
-// function getParameterByName(target) {
-//     // Get request URL
-//     let url = window.location.href;
+function getParameterByName(target) {
+     // Get request URL
+     let url = window.location.href;
 //     // Encode target parameter name to url encoding
-//     target = target.replace(/[\[\]]/g, "\\$&");
+     target = target.replace(/[\[\]]/g, "\\$&");
 //
 //     // Ues regular expression to find matched parameter value
-//     let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
-//         results = regex.exec(url);
-//     if (!results) return null;
-//     if (!results[2]) return '';
+     let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
+     results = regex.exec(url);
+     if (!results) return null;
+     if (!results[2]) return '';
 //
 //     // Return the decoded parameter value
-//     return decodeURIComponent(results[2].replace(/\+/g, " "));
-// }
+     return decodeURIComponent(results[2].replace(/\+/g, " "));
+ }
 
 function handleStarts(){
     let table = jQuery("#starts-body")
@@ -139,7 +139,7 @@ jQuery.ajax({
 let url = "api/movies"
 let some_url = url + window.location.search;
 
-console.log("This is the url", some_url);
+//console.log("This is the url", some_url);
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
@@ -151,17 +151,12 @@ function handleHistory(data){
         location.href = "./movies.html" + "?" + data;
     }
     else{
-        jQuery.ajax({
-            dataType: "json", // Setting return data type
-            method: "GET", // Setting request method
-            // url: "/api/movies" + ,
-            url: url + window.location.search,
-            success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
-        });
-       }
+        location.href = "./movies.html" + "?page=1&n=10";
+    }
 }
-console.log(some_url);
-if (some_url === url){
+
+
+if (url === some_url){
     jQuery.ajax({
         dataType: "text", // Setting return data type
         method: "GET", // Setting request method
@@ -180,6 +175,18 @@ else{
         success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
 
+}
+var u = new URL(location.href)
+
+if (getParameterByName("page") == null || getParameterByName("n") == null){
+    if (getParameterByName("page") == null){
+        u.searchParams.append("page", 1)
+        location.href = u.href;
+    }
+    if (getParameterByName("n") == null){
+        u.searchParams.append("n", 10)
+        location.href = u.href;
+    }
 }
 var sortState = {
     title: "asc",
@@ -217,25 +224,33 @@ function sortMovies(sortBy, sortOrder) {
     });
 }
 
-let currentPage = 1;
-let moviesPerPage = 10;
-
 document.getElementById('recordsPerPage').addEventListener('change', function() {
-    moviesPerPage = parseInt(this.value); // Update the recordsPerPage with the selected value
-    currentPage = 1;
-    fetchNumMovies(); // Fetch the first page of movies with the new limit
+    let currentPage = getParameterByName("page");
+    let moviesPerPage = parseInt(this.value); // Update the recordsPerPage with the selected value
+
+    let query = url;
+    let params = new URLSearchParams(window.location.search);
+    query = `${url}?${params.toString()}`;
+
+    page_url = "./movies.html?" + params.toString();
+    page_url = page_url.replace("page=" + currentPage, "page=1");
+    page_url = page_url.replace("n=" + getParameterByName("n"), "n=" + moviesPerPage);
+
+    location.href = page_url;
 });
+
 
 function fetchNumMovies(diff) {
     let query = url;
     let params = new URLSearchParams(window.location.search);
-    params.set('n', moviesPerPage);
-    params.set('page', currentPage);
+    let currentPage = getParameterByName("page");
+    let newPage = parseInt(currentPage) + diff
     query = `${url}?${params.toString()}`;
 
-    console.log("./movies.html?" + params.toString());
     page_url = "./movies.html?" + params.toString();
-    location.href = "./movies.html?" + params.toString()
+    page_url = page_url.replace("page=" + currentPage, "page=" + newPage);
+
+    location.href = page_url;
 
 }
 

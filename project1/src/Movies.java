@@ -194,7 +194,7 @@ public class Movies extends HttpServlet {
                 }
 
                 query = queryBuilder.toString();
-
+                System.out.println(query);
 
 //                String query = queryBuilder.toString();
 //                query = "SELECT m.id, m.title, m.year, m.director, " +

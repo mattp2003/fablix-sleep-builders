@@ -155,20 +155,8 @@ function handleHistory(data){
     }
 }
 
-var u = new URL(location.href)
 
-if (getParameterByName("page") == null || getParameterByName("n") == null){
-    if (getParameterByName("page") == null){
-        u.searchParams.append("page", 1)
-        location.href = u.href;
-    }
-    if (getParameterByName("n") == null){
-        u.searchParams.append("n", 10)
-        location.href = u.href;
-    }
-}
-
-if (some_url === url){
+if (url === some_url){
     jQuery.ajax({
         dataType: "text", // Setting return data type
         method: "GET", // Setting request method
@@ -186,6 +174,18 @@ else{
         success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
 
+}
+var u = new URL(location.href)
+
+if (getParameterByName("page") == null || getParameterByName("n") == null){
+    if (getParameterByName("page") == null){
+        u.searchParams.append("page", 1)
+        location.href = u.href;
+    }
+    if (getParameterByName("n") == null){
+        u.searchParams.append("n", 10)
+        location.href = u.href;
+    }
 }
 var sortState = {
     title: "asc",

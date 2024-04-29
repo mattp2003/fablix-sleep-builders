@@ -18,78 +18,109 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="Asset/movies.css">
     <title>Movie List</title>
+    <style>
+        .dropdown-container {
+            float: right;
+            padding: 10px;
+        }
+        #recordsPerPage {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        .pagination-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
 
-<div style="position: fixed; top: 0; right: 0; padding: 10px;">
-    <a href="logout" style="text-decoration: none; color: white; background-color: #f44336; padding: 8px 15px; border-radius: 5px; font-size: 16px;">Logout</a>
-</div>
+    <div style="position: fixed; top: 0; right: 0; padding: 10px;">
+        <a href="logout" style="text-decoration: none; color: white; background-color: #f44336; padding: 8px 15px; border-radius: 5px; font-size: 16px;">Logout</a>
+    </div>
 
-<div style="position: fixed; top: 0; right: 100px; padding: 10px;">
-    <a href="./cart.html" style="text-decoration: none; color: white; background-color: blue; padding: 8px 15px; border-radius: 5px; font-size: 16px;">Cart</a>
-</div>
+    <div style="position: fixed; top: 0; right: 100px; padding: 10px;">
+        <a href="./cart.html" style="text-decoration: none; color: white; background-color: blue; padding: 8px 15px; border-radius: 5px; font-size: 16px;">Cart</a>
+    </div>
 
-<h1>Movies</h1>
-<table id=nav_table class="table table-striped">
-    <thead>
-    <tr>
-        <th>Navigation</th>
-    </tr>
-    </thead>
+    <h1>Movies</h1>
+    <table id=nav_table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Navigation</th>
+        </tr>
+        </thead>
 
-    <tbody id=nav_body>
-    <tr>
-        <th>
-            <a href="movies.html">Movies</a>
-        </th>
-    </tr>
-    <tr>
-        <th>
-            <a href="stars.html">Stars</a>
-        </th>
-    </tr>
-    </tbody>
-</table>
+        <tbody id=nav_body>
+        <tr>
+            <th>
+                <a href="movies.html">Movies</a>
+            </th>
+        </tr>
+        <tr>
+            <th>
+                <a href="stars.html">Stars</a>
+            </th>
+        </tr>
+        </tbody>
+    </table>
 
-<table class="genres">
-    <tbody id="genre_body">
-    </tbody>
-</table>
+    <table class="genres">
+        <tbody id="genre_body">
+        </tbody>
+    </table>
 
-<table class="starts-with">
-    <tbody id="starts-body">
-    </tbody>
-</table>
+    <table class="starts-with">
+        <tbody id="starts-body">
+        </tbody>
+    </table>
 
-<!-- Id "star_table" is useful for jQuery to find the html element with id, class here is mapping to Bootstrap defined class CSS -->
-<table id=movie_table class="table table-striped">
-    <!-- Create a table header -->
-    <thead>
-    <tr>
-        <!-- Titles of each column-->
-        <th id="sort_title">Title</th>
-        <th>Year</th>
-        <th>Director</th>
-        <th>Genre(s)</th>
-        <th>Star(s)</th>
-        <th id="sort_rating">Ratings</th>
-        <th>Order</th>
-    </tr>
-    </thead>
-    <!-- Table body is left empty here, will be populated with the data retrieved with index.js -->
-    <!-- Again, id "star_table_body" is useful for jQuery to find this html element -->
-    <tbody id=movies_table_body></tbody>
-</table>
+    <!-- Id "star_table" is useful for jQuery to find the html element with id, class here is mapping to Bootstrap defined class CSS -->
+    <div class="dropdown-container">
+        <label>Page Limit</label>
+        <select id="recordsPerPage">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
 
-<!-- Load jQuery and Bootstrap JS -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<!-- Load our own JS file -->
-<!-- The path is relative to index.html, since these two files are in the same directory -->
-<!-- Note the url does not contain a "/" in the beginning, which means the url is relative to current path
-     otherwise the url is relative to the root path-->
-<script src="movies.js"></script>
+    <table id=movie_table class="table table-striped">
+        <!-- Create a table header -->
+        <thead>
+        <tr>
+            <!-- Titles of each column-->
+            <th id="sort_title">Title</th>
+            <th>Year</th>
+            <th>Director</th>
+            <th>Genre(s)</th>
+            <th>Star(s)</th>
+            <th id="sort_rating">Ratings</th>
+            <th>Order</th>
+        </tr>
+        </thead>
+        <!-- Table body is left empty here, will be populated with the data retrieved with index.js -->
+        <!-- Again, id "star_table_body" is useful for jQuery to find this html element -->
+        <tbody id=movies_table_body></tbody>
+    </table>
+
+    <!-- Buttons for pagination -->
+    <div class="pagination-container">
+        <button onclick="goToPreviousPage()">Prev</button>
+        <button onclick="goToNextPage()">Next</button>
+    </div>
+    <!-- Load jQuery and Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- Load our own JS file -->
+    <!-- The path is relative to index.html, since these two files are in the same directory -->
+    <!-- Note the url does not contain a "/" in the beginning, which means the url is relative to current path
+         otherwise the url is relative to the root path-->
+    <script src="movies.js"></script>
 </body>
 
 

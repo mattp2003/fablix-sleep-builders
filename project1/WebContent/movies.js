@@ -32,6 +32,9 @@ function handleMovieResult(resultData) {
     let moviesTableBodyElement = jQuery("#movies_table_body");
     moviesTableBodyElement.empty();
     // Iterate through resultData, no more than 10 entries
+    // if (resultData.length === 0 && currentPage > 1){
+    //     location.href = ""
+    // }
     for (let i = 0; i < resultData.length; i++) {
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
@@ -78,21 +81,21 @@ function build_stars(stars, stars_id) {
 }
 
 
-function getParameterByName(target) {
-    // Get request URL
-    let url = window.location.href;
-    // Encode target parameter name to url encoding
-    target = target.replace(/[\[\]]/g, "\\$&");
-
-    // Ues regular expression to find matched parameter value
-    let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-
-    // Return the decoded parameter value
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-}
+// function getParameterByName(target) {
+//     // Get request URL
+//     let url = window.location.href;
+//     // Encode target parameter name to url encoding
+//     target = target.replace(/[\[\]]/g, "\\$&");
+//
+//     // Ues regular expression to find matched parameter value
+//     let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
+//         results = regex.exec(url);
+//     if (!results) return null;
+//     if (!results[2]) return '';
+//
+//     // Return the decoded parameter value
+//     return decodeURIComponent(results[2].replace(/\+/g, " "));
+// }
 
 function handleStarts(){
     let table = jQuery("#starts-body")
@@ -152,8 +155,8 @@ jQuery.ajax({
 });
 
 var sortState = {
-    title: "asc", // Default sort order for title
-    rating: "asc" // Default sort order for rating
+    title: "asc",
+    rating: "asc"
 };
 
 $("#sort_title").on("click", function() {
@@ -185,4 +188,35 @@ function sortMovies(sortBy, sortOrder) {
         url: query,
         success: (resultData) => handleMovieResult(resultData)
     });
+}
+
+let currentPage = 1;
+let moviesPerPage = 10;
+
+document.getElementById('recordsPerPage').addEventListener('change', function() {
+    moviesPerPage = parseInt(this.value); // Update the recordsPerPage with the selected value
+    currentPage = 1;
+    fetchNumMovies(); // Fetch the first page of movies with the new limit
+});
+
+function fetchNumMovies(diff) {
+    let query = url;
+    let params = new URLSearchParams(window.location.search);
+    params.set('n', moviesPerPage);
+    params.set('page', currentPage);
+    query = `${url}?${params.toString()}`;
+
+    console.log("./movies.html?" + params.toString());
+    page_url = "./movies.html?" + params.toString()
+    page_url.replace("page=")
+    location.href = "./movies.html?" + params.toString()
+
+}
+
+function goToNextPage() {
+    fetchNumMovies(1);
+}
+
+function goToPreviousPage() {
+    fetchNumMovies(-1);
 }

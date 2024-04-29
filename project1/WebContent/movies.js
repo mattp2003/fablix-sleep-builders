@@ -160,6 +160,7 @@ if (url === some_url){
     jQuery.ajax({
         dataType: "text", // Setting return data type
         method: "GET", // Setting request method
+        // url: "/api/movies" + ,
         url: "api/movieHistory",
         success: (resultData) => handleHistory(resultData)
     });

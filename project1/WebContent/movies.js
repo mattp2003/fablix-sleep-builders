@@ -8,6 +8,20 @@
  *      2. Populate the data to correct html elements.
  */
 
+function Order(action, id, title){
+    let t = title.replace(' ', '%20');
+    orderData = "action=" + action + "&id=" + id + "&title=" + title;
+    //console.log(orderData)
+
+    jQuery.ajax("api/cart", {
+        method: "POST",
+        data: orderData,
+        success: resultData => {
+           //console.log(resultData);
+           alert(title + " has been added to cart")
+        }
+    });
+}
 
 /**
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
@@ -46,7 +60,9 @@ function handleMovieResult(resultData) {
         rowHTML += "</th>"
 
         rowHTML += "<th>" + resultData[i]["rating"] + "</th>";
-        //console.log(resultData[i]["rating"])
+
+        rowHTML += "<th><button onclick=\"Order(\'increase\', \'" + resultData[i]['id'] + "\', \'" + resultData[i]['title'] + "\')\">Add to Cart</button></th>"
+
         rowHTML += "</tr>";
         // Append the row created to the table body, which will refresh the page
         moviesTableBodyElement.append(rowHTML);

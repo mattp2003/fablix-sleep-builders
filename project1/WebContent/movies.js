@@ -53,6 +53,7 @@ function handleMovieResult(resultData) {
     }
 }
 
+
 function build_stars(stars, stars_id) {
     let stars_dict = {};
     for (let i = 0; i < stars.length; i++) stars_dict[stars[i]] = stars_id[i];
@@ -116,38 +117,19 @@ jQuery.ajax({
 
 
 let url = "api/movies"
+let some_url = url + window.location.search;
 
-const query_params = new Map()
-const genre = getParameterByName("genre")
-//console.log(genre)
-if (genre){
-    query_params.set("genre",genre)
-}
-const startsWith = getParameterByName("startsWith")
-if (startsWith){
-    query_params.set("startsWith", startsWith)
-}
-let c = 0
-//console.log(query_params)
-query_params.forEach((value, key) => {
-    console.log(key)
-    if (c === 0){
-        url += "?"
-    }
-    else{
-        url += "&"
-    }
-    url += key + "=" + value
-})
-//console.log(url)
+console.log("This is the url", some_url);
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
+
 
 // Makes the HTTP GET request and registers on success callback function handleStarResult
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
-    url: url, // Setting request url, which is mapped by StarsServlet in Stars.java
+    // url: "/api/movies" + ,
+    url: url + window.location.search,
     success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });

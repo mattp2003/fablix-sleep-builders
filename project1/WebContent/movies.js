@@ -205,6 +205,8 @@ $("#sort_rating").on("click", function() {
     sortMovies("rating", sortState.rating);
 });
 
+let sortQuery = "";
+
 function sortMovies(sortBy, sortOrder) {
     // Construct the query with the sorting parameters
     let query = "";
@@ -214,7 +216,7 @@ function sortMovies(sortBy, sortOrder) {
     else {
         query = "api/movies" + window.location.search + `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
     }
-
+    sortQuery = `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
     // Make the AJAX call to the MoviesServlet
     jQuery.ajax({
         dataType: "json",
@@ -230,7 +232,7 @@ document.getElementById('recordsPerPage').addEventListener('change', function() 
 
     let query = url;
     let params = new URLSearchParams(window.location.search);
-    query = `${url}?${params.toString()}`;
+    // query = `${url}?${params.toString()}`;
 
     page_url = "./movies.html?" + params.toString();
     page_url = page_url.replace("page=" + currentPage, "page=1");
@@ -245,13 +247,12 @@ function fetchNumMovies(diff) {
     let params = new URLSearchParams(window.location.search);
     let currentPage = getParameterByName("page");
     let newPage = parseInt(currentPage) + diff
-    query = `${url}?${params.toString()}`;
-
-    page_url = "./movies.html?" + params.toString();
-    page_url = page_url.replace("page=" + currentPage, "page=" + newPage);
-
-    location.href = page_url;
-
+    // query = `${url}?${params.toString()}`;
+    if (newPage >= 1) {
+        page_url = "./movies.html?" + params.toString() + sortQuery ;
+        page_url = page_url.replace("page=" + currentPage, "page=" + newPage);
+        location.href = page_url;
+    }
 }
 
 function goToNextPage() {

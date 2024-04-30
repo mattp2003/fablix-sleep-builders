@@ -151,19 +151,19 @@ function handleHistory(data){
         location.href = "./movies.html" + "?" + data;
     }
     else{
-        // location.href = "./movies.html" + "?page=1&n=10";
-        var u = new URL(location.href)
-
-        if (getParameterByName("page") == null || getParameterByName("n") == null){
-            if (getParameterByName("page") == null){
-                u.searchParams.append("page", 1)
-                location.href = u.href;
-            }
-            if (getParameterByName("n") == null){
-                u.searchParams.append("n", 10)
-                location.href = u.href;
-            }
-        }
+        location.href = "./movies.html" + "?page=1&n=10";
+        // var u = new URL(location.href)
+        //
+        // if (getParameterByName("page") == null || getParameterByName("n") == null){
+        //     if (getParameterByName("page") == null){
+        //         u.searchParams.append("page", 1)
+        //         location.href = u.href;
+        //     }
+        //     if (getParameterByName("n") == null){
+        //         u.searchParams.append("n", 10)
+        //         location.href = u.href;
+        //     }
+        // }
     }
 }
 
@@ -188,6 +188,20 @@ else{
     });
 
 }
+
+var u = new URL(location.href)
+
+if (getParameterByName("page") == null || getParameterByName("n") == null){
+    if (getParameterByName("page") == null){
+        u.searchParams.append("page", 1)
+        location.href = u.href;
+    }
+    if (getParameterByName("n") == null){
+        u.searchParams.append("n", 10)
+        location.href = u.href;
+    }
+}
+
 
 var sortState = {
     title: "asc",
@@ -235,7 +249,7 @@ document.getElementById('recordsPerPage').addEventListener('change', function() 
     let params = new URLSearchParams(window.location.search);
     // query = `${url}?${params.toString()}`;
 
-    page_url = "./movies.html?" + params.toString();
+    page_url = "./movies.html?" + params.toString() + sortQuery;
     page_url = page_url.replace("page=" + currentPage, "page=1");
     page_url = page_url.replace("n=" + getParameterByName("n"), "n=" + moviesPerPage);
 

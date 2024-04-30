@@ -78,10 +78,17 @@ public class Movies extends HttpServlet {
 
             String sortBy = request.getParameter("sortBy");
             String sortOrder = request.getParameter("sortOrder");
-
+            String sortOpp = "";
             if (sortBy == null || sortOrder == null) {
                 sortBy = "rating"; // Default column to sort by
                 sortOrder = "desc"; // Default sort order
+                sortOpp = "asc";
+            } else {
+                if (sortOrder.equals("desc")) {
+                    sortOpp = "asc";
+                } else if (sortOrder.equals("asc")) {
+                    sortOpp = "desc";
+                }
             }
 
             boolean isSearched = (searchTitle != null && !searchTitle.isEmpty()) || (searchYear != null && !searchYear.isEmpty())|| (searchDirector != null && !searchDirector.isEmpty()) || (searchStarName != null && !searchStarName.isEmpty());
@@ -120,9 +127,9 @@ public class Movies extends HttpServlet {
 //                queryBuilder.append("ORDER BY rating DESC LIMIT ? ) as m ");
 
                 if ("title".equals(sortBy)) {
-                    queryBuilder.append("ORDER BY title ").append(sortOrder).append(", rating ").append(sortOrder).append(" LIMIT ? OFFSET ?) as m ");
+                    queryBuilder.append("ORDER BY title ").append(sortOrder).append(", rating ").append(sortOpp).append(" LIMIT ? OFFSET ?) as m ");
                 } else if ("rating".equals(sortBy)) {
-                    queryBuilder.append("ORDER BY rating ").append(sortOrder).append(", title ").append(sortOrder).append(" LIMIT ? OFFSET ?) as m ");
+                    queryBuilder.append("ORDER BY rating ").append(sortOrder).append(", title ").append(sortOpp).append(" LIMIT ? OFFSET ?) as m ");
                 }
 
                 queryBuilder.append("INNER JOIN stars_in_movies sim ON m.id = sim.movieId ");

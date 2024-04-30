@@ -146,12 +146,24 @@ let some_url = url + window.location.search;
 
 //has no parameters, load parameters from session history and reload site
 function handleHistory(data){
-    console.log(data);
+    console.log("Old history: " + data);
     if (data.length > 0){
         location.href = "./movies.html" + "?" + data;
     }
     else{
-        location.href = "./movies.html" + "?page=1&n=10";
+        // location.href = "./movies.html" + "?page=1&n=10";
+        var u = new URL(location.href)
+
+        if (getParameterByName("page") == null || getParameterByName("n") == null){
+            if (getParameterByName("page") == null){
+                u.searchParams.append("page", 1)
+                location.href = u.href;
+            }
+            if (getParameterByName("n") == null){
+                u.searchParams.append("n", 10)
+                location.href = u.href;
+            }
+        }
     }
 }
 
@@ -176,18 +188,7 @@ else{
     });
 
 }
-var u = new URL(location.href)
 
-if (getParameterByName("page") == null || getParameterByName("n") == null){
-    if (getParameterByName("page") == null){
-        u.searchParams.append("page", 1)
-        location.href = u.href;
-    }
-    if (getParameterByName("n") == null){
-        u.searchParams.append("n", 10)
-        location.href = u.href;
-    }
-}
 var sortState = {
     title: "asc",
     rating: "asc"

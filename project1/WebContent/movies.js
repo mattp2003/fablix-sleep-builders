@@ -1,3 +1,6 @@
+let currentPage = 1;
+let hasNext = false;
+
 /**
  * This example is following frontend and backend separation.
  *
@@ -27,8 +30,15 @@ function Order(action, id, title){
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
  * @param resultData jsonObject
  */
-function handleMovieResult(resultData) {
-    console.log(resultData)
+
+function handleMovieResult(data) {
+    resultData = data["movies"];
+    currentPage = data["page"];
+    hasNext = data["hasNext"];
+
+
+    console.log(resultData, currentPage, hasNext);
+
     let moviesTableBodyElement = jQuery("#movies_table_body");
     moviesTableBodyElement.empty();
     // Iterate through resultData, no more than 10 entries
@@ -139,73 +149,22 @@ jQuery.ajax({
 let url = "api/movies"
 let some_url = url + window.location.search;
 
-//console.log("This is the url", some_url);
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
 
-//has no parameters, load parameters from session history and reload site
-function handleHistory(data){
-    console.log("Old history: " + data);
-    if (data.length > 0){
-        location.href = "./movies.html" + "?" + data;
-    }
-    else{
-        location.href = "./movies.html" + "?page=1&n=10";
-        // var u = new URL(location.href)
-        //
-        // if (getParameterByName("page") == null || getParameterByName("n") == null){
-        //     if (getParameterByName("page") == null){
-        //         u.searchParams.append("page", 1)
-        //         location.href = u.href;
-        //     }
-        //     if (getParameterByName("n") == null){
-        //         u.searchParams.append("n", 10)
-        //         location.href = u.href;
-        //     }
-        // }
-    }
-}
-
-
-if (url === some_url){
-    jQuery.ajax({
-        dataType: "text", // Setting return data type
-        method: "GET", // Setting request method
-        // url: "/api/movies" + ,
-        url: "api/movieHistory",
-        success: (resultData) => handleHistory(resultData)
-    });
-}
-else{
-    // Makes the HTTP GET request and registers on success callback function handleStarResult
-    jQuery.ajax({
-        dataType: "json", // Setting return data type
-        method: "GET", // Setting request method
-        // url: "/api/movies" + ,
-        url: url + window.location.search,
-        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
-    });
-
-}
-
-var u = new URL(location.href)
-
-if (getParameterByName("page") == null || getParameterByName("n") == null){
-    if (getParameterByName("page") == null){
-        u.searchParams.append("page", 1)
-        location.href = u.href;
-    }
-    if (getParameterByName("n") == null){
-        u.searchParams.append("n", 10)
-        location.href = u.href;
-    }
-}
+jQuery.ajax({
+    dataType: "json", // Setting return data type
+    method: "GET", // Setting request method
+    // url: "/api/movies" + ,
+    url: url + window.location.search,
+    success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+});
 
 
 var sortState = {
     title: "asc",
-    rating: "asc"
+    rating: "desc"
 };
 
 $("#sort_title").on("click", function() {
@@ -223,57 +182,71 @@ $("#sort_rating").on("click", function() {
 let sortQuery = "";
 
 function sortMovies(sortBy, sortOrder) {
-    // Construct the query with the sorting parameters
-    let query = "";
-    if (window.location.search.length === 0) {
-        query = `api/movies?&sortBy=${sortBy}&sortOrder=${sortOrder}`;
+    let params = null;
+    if (sortBy === "rating"){
+        params = new URLSearchParams({
+         "sortBy": sortBy,
+         "ratingOrder": sortOrder
+        })
     }
-    else {
-        query = "api/movies" + window.location.search + `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
+    else{
+        params = new URLSearchParams({
+         "sortBy": sortBy,
+         "titleOrder": sortOrder
+        })
     }
-    sortQuery = `&sortBy=${sortBy}&sortOrder=${sortOrder}`;
-    // Make the AJAX call to the MoviesServlet
     jQuery.ajax({
-        dataType: "json",
-        method: "GET",
-        url: query,
-        success: (resultData) => handleMovieResult(resultData)
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        // url: "/api/movies" + ,
+        url: "api/movies?" + params.toString(),
+        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
 }
 
 document.getElementById('recordsPerPage').addEventListener('change', function() {
-    let currentPage = getParameterByName("page");
     let moviesPerPage = parseInt(this.value); // Update the recordsPerPage with the selected value
-
-    let query = url;
-    let params = new URLSearchParams(window.location.search);
-    // query = `${url}?${params.toString()}`;
-
-    page_url = "./movies.html?" + params.toString() + sortQuery;
-    page_url = page_url.replace("page=" + currentPage, "page=1");
-    page_url = page_url.replace("n=" + getParameterByName("n"), "n=" + moviesPerPage);
-
-    location.href = page_url;
+    const params = new URLSearchParams({
+        "page": 1,
+        "n": moviesPerPage
+    })
+    jQuery.ajax({
+        dataType: "json", // Setting return data type
+        method: "GET", // Setting request method
+        // url: "/api/movies" + ,
+        url: "api/movies?" + params.toString(),
+        success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+    });
 });
 
-
-function fetchNumMovies(diff) {
-    let query = url;
-    let params = new URLSearchParams(window.location.search);
-    let currentPage = getParameterByName("page");
-    let newPage = parseInt(currentPage) + diff
-    // query = `${url}?${params.toString()}`;
-    if (newPage >= 1) {
-        page_url = "./movies.html?" + params.toString() + sortQuery ;
-        page_url = page_url.replace("page=" + currentPage, "page=" + newPage);
-        location.href = page_url;
+function goToNextPage() {
+    let newPage = currentPage + 1;
+    if (hasNext){
+        const params = new URLSearchParams({
+            "page": newPage
+        })
+        jQuery.ajax({
+            dataType: "json", // Setting return data type
+            method: "GET", // Setting request method
+            // url: "/api/movies" + ,
+            url: "api/movies?" + params.toString(),
+            success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+        });
     }
 }
 
-function goToNextPage() {
-    fetchNumMovies(1);
-}
-
 function goToPreviousPage() {
-    fetchNumMovies(-1);
+    let newPage = currentPage -1;
+    if (newPage > 0){
+        const params = new URLSearchParams({
+            "page": newPage
+        })
+        jQuery.ajax({
+            dataType: "json", // Setting return data type
+            method: "GET", // Setting request method
+            // url: "/api/movies" + ,
+            url: "api/movies?" + params.toString(),
+            success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+        });
+    }
 }

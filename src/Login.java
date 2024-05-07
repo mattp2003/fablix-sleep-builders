@@ -28,10 +28,24 @@ public class Login extends HttpServlet {
         }
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json"); // Response mime type
+        JsonObject responseJsonObject = new JsonObject();
+
+        String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+        try {
+            RecaptchaVerifyUtils.verify(gRecaptchaResponse);
+
+        } catch (Exception e) {
+            responseJsonObject.addProperty("status", "fail");
+            request.getServletContext().log("Login failed");
+            responseJsonObject.addProperty("message", "recaptcha-failed");
+            response.getWriter().write(responseJsonObject.toString());
+            return;
+        }
+
+
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-
-        response.setContentType("application/json"); // Response mime type
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
@@ -44,7 +58,6 @@ public class Login extends HttpServlet {
 
             boolean user_exists = rs.next();
 
-            JsonObject responseJsonObject = new JsonObject();
             if (!user_exists){
                 responseJsonObject.addProperty("status", "fail");
                 request.getServletContext().log("Login failed");

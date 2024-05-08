@@ -67,3 +67,9 @@ CREATE TABLE ratings (
     numVotes INTEGER NOT NULL,
     FOREIGN KEY (movieId) REFERENCES movies(id)
 );
+
+CREATE TABLE employees (
+	enail VARCHAR(50) PRIMARY KEY NOT NULL,
+    password varchar(20) NOT NULL,
+    fullname varchar(100) DEFAULT ''
+);

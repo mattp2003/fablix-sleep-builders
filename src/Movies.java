@@ -41,7 +41,6 @@ public class Movies extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
-        session.setAttribute("history", request.getQueryString());
         response.setContentType("application/json"); // Response mime type
 
         // Output stream to STDOUT

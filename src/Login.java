@@ -45,13 +45,14 @@ public class Login extends HttpServlet {
 
 
         String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        String unverified_password = request.getParameter("password");
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
         try (Connection conn = dataSource.getConnection()){
             String query = "SELECT password from customers where email=?;";
+            // Prepared Statement checked
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, email);
             ResultSet rs = statement.executeQuery();
@@ -64,13 +65,12 @@ public class Login extends HttpServlet {
                 responseJsonObject.addProperty("message", "user with email " + email + " doesn't exist");
             }
             else{
-                String queriedPassword = rs.getString("password");
-                if (password.equals(queriedPassword)){
+                boolean isVerified = VerifyPassword.verifyCredentials(email, unverified_password);
+                if (isVerified){
                     request.getSession().setAttribute("user", new User(email));
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "success");
-                }
-                else{
+                } else {
                     responseJsonObject.addProperty("status", "fail");
                     request.getServletContext().log("Login failed");
                     responseJsonObject.addProperty("message", "incorrect password");

@@ -47,7 +47,7 @@ public class Movie extends HttpServlet {
         try (Connection conn = dataSource.getConnection()) {
             //get movie details
             String movieDataQuery = "SELECT id, rating, numVotes, title, year, director from ratings, movies where movies.id = ? and ratings.movieId = movies.id;";
-
+            // Prepared Statement checked
             PreparedStatement movieStatement = conn.prepareStatement(movieDataQuery);
             movieStatement.setString(1, id);
 
@@ -66,7 +66,7 @@ public class Movie extends HttpServlet {
 
             //get movie stars
             String starsQuery = "select name, starId from (select name, s.starId, count(name) as c from (select starId, name from stars_in_movies, stars where movieId = ? and starId = stars.id)s inner join stars_in_movies sim where sim.starId = s.starId group by name, s.starId order by c desc, name asc)a;";
-
+            // Prepared Statement checked
             PreparedStatement starsStatement = conn.prepareStatement(starsQuery);
             starsStatement.setString(1, id);
 
@@ -86,7 +86,7 @@ public class Movie extends HttpServlet {
 
             //get movie genres
             String genresQuery = "select genreId, name from genres_in_movies, genres where movieId = ? and genreId = genres.id;";
-
+            // Prepared Statement checked
             PreparedStatement genresStatement = conn.prepareStatement(genresQuery);
             genresStatement.setString(1, id);
 

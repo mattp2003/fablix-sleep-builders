@@ -217,6 +217,7 @@ public class Movies extends HttpServlet {
             query = queryBuilder.toString();
 
             int paramIndex = 1;
+            // PreparedStatement checked!
             statement = conn.prepareStatement(query);
             if (searchTitle != null && !searchTitle.isEmpty()) {
                 statement.setString(paramIndex++, "%" + searchTitle + "%");
@@ -238,8 +239,8 @@ public class Movies extends HttpServlet {
             JsonArray jsonArray = new JsonArray();
 
             // Iterate through each row of rs
-            int c = 0;
-            while (c < max_movies && rs.next()) {
+            int cReturnedMovies = 0;
+            while (cReturnedMovies < max_movies && rs.next()) {
                 String movieID = rs.getString("id");
                 String movieTitle = rs.getString("title");
                 String year = rs.getString("year");
@@ -260,7 +261,7 @@ public class Movies extends HttpServlet {
                 jsonObject.addProperty("rating", rating);
 
                 jsonArray.add(jsonObject);
-                c+=1;
+                cReturnedMovies+=1;
             }
             boolean hasNext = rs.next(); //has an extra element above maximum elements, and therefore has next page
             rs.close();

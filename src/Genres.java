@@ -50,6 +50,7 @@ public class Genres extends HttpServlet {
             JsonArray genres = new JsonArray();
 
             String query = "SELECT * FROM genres ORDER BY name ASC";
+            // Prepared Statement checked
             PreparedStatement ps = conn.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
 

@@ -51,6 +51,7 @@ public class Genre extends HttpServlet {
             JsonArray ids = new JsonArray();
 
             String query = "select * from genres_in_movies join movies where genreId = (select id from genres where name=?) and id = movieId;";
+            // Prepared Statement checked
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, genre);
             ResultSet rs = ps.executeQuery();

@@ -64,6 +64,7 @@ public class Pay extends HttpServlet {
 
         try (Connection conn = dataSource.getConnection()){
             String query = "SELECT id, firstName, lastName, expiration from creditcards where id=?;";
+            // PreparedStatement checked!
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, creditCard);
             ResultSet rs = statement.executeQuery();

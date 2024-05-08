@@ -56,6 +56,7 @@ public class SingleStarServlet extends HttpServlet {
             String query = "SELECT * from stars as s, stars_in_movies as sim, movies as m where m.id = sim.movieId and sim.starId = s.id and s.id = ? order by year desc, title asc";
 
             // Declare our statement
+            // PreparedStatement checked!
             PreparedStatement starStatement = conn.prepareStatement(starQuery);
             PreparedStatement statement = conn.prepareStatement(query);
 

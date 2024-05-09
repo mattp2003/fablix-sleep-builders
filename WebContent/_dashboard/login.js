@@ -5,11 +5,10 @@ let login_form = $("#login_form");
  * @param resultDataString jsonObject
  */
 function handleLoginResult(resultDataString) {
-    console.log(resultDataString);
+
     let resultDataJson = resultDataString;
 
     console.log("handle login response");
-    console.log(resultDataJson);
     console.log(resultDataJson["status"]);
 
     // If login succeeds, it will redirect the user to index.html
@@ -39,7 +38,7 @@ function submitLoginForm(formSubmitEvent) {
     formSubmitEvent.preventDefault();
 
     $.ajax(
-        "api/employeeLogin", {
+        "../api/employeeLogin", {
             method: "POST",
             // Serialize the login form to the data sent by POST request
             data: login_form.serialize(),

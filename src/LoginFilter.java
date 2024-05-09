@@ -21,7 +21,7 @@ public class LoginFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        //System.out.println("LoginFilter: " + httpRequest.getRequestURI());
+        System.out.println("LoginFilter: " + httpRequest.getRequestURI());
 
         // Check if this URL is allowed to access without logging in
         if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
@@ -29,10 +29,12 @@ public class LoginFilter implements Filter {
             chain.doFilter(request, response);
             return;
         }
-
         // Redirect to login page if the "user" attribute doesn't exist in session
         if (httpRequest.getSession().getAttribute("user") == null) {
-            httpResponse.sendRedirect("./login.html");
+
+            //System.out.println("redirection to:" );
+            System.out.println("Not allowed");
+            httpResponse.sendRedirect("/cs122b_sleep_builders_war/login.html");
         } else {
             chain.doFilter(request, response);
         }
@@ -44,16 +46,17 @@ public class LoginFilter implements Filter {
          Always allow your own login related requests(html, js, servlet, etc..)
          You might also want to allow some CSS files, etc..
          */
-        return allowedURIs.stream().anyMatch(requestURI.toLowerCase()::endsWith);
+        return allowedURIs.contains(requestURI);
     }
 
     public void init(FilterConfig fConfig) {
-        allowedURIs.add("login.html");
-        allowedURIs.add("login.js");
-        allowedURIs.add("api/login");
+        allowedURIs.add("/cs122b_sleep_builders_war/login.html");
+        allowedURIs.add("/cs122b_sleep_builders_war/login.js");
+        allowedURIs.add("/cs122b_sleep_builders_war/api/login");
 
-        allowedURIs.add("_dashboard/login.html");
-        allowedURIs.add("_dashboard/login.js");
+        allowedURIs.add("/cs122b_sleep_builders_war/_dashboard/login.html");
+        allowedURIs.add("/cs122b_sleep_builders_war/_dashboard/login.js");
+        allowedURIs.add("/cs122b_sleep_builders_war/api/employeeLogin");
     }
 
     public void destroy() {

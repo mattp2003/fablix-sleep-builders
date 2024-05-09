@@ -69,7 +69,7 @@ CREATE TABLE ratings (
 );
 
 CREATE TABLE employees (
-	enail VARCHAR(50) PRIMARY KEY NOT NULL,
+	email VARCHAR(50) PRIMARY KEY NOT NULL,
     password varchar(20) NOT NULL,
     fullname varchar(100) DEFAULT ''
 );

@@ -33,10 +33,26 @@ public class LoginFilter implements Filter {
         if (httpRequest.getSession().getAttribute("user") == null) {
 
             //System.out.println("redirection to:" );
-            System.out.println("Not allowed");
             httpResponse.sendRedirect("/cs122b_sleep_builders_war/login.html");
+
+
+        // Otherwise is logged in
         } else {
-            chain.doFilter(request, response);
+            boolean isEmployee = (boolean) httpRequest.getSession().getAttribute("isEmployee");
+
+
+            //accessing employee only paths
+            if (httpRequest.getRequestURI().contains("/cs122b_sleep_builders_war/_dashboard")){
+                if (isEmployee){
+                    chain.doFilter(request, response);
+                }
+                else{
+                    httpResponse.sendRedirect("/cs122b_sleep_builders_war/");
+                }
+            }
+            else{
+                chain.doFilter(request, response);
+            }
         }
     }
 

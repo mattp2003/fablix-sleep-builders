@@ -67,6 +67,7 @@ public class EmployeeLogin extends HttpServlet {
                 String queriedPassword = rs.getString("password");
                 if (password.equals(queriedPassword)){
                     request.getSession().setAttribute("user", new User(email));
+                    request.getSession().setAttribute("isEmployee", true);
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "success");
                 }

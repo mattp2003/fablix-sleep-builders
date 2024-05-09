@@ -68,6 +68,7 @@ public class Login extends HttpServlet {
                 boolean isVerified = VerifyPassword.verifyCredentials(email, unverified_password);
                 if (isVerified){
                     request.getSession().setAttribute("user", new User(email));
+                    request.getSession().setAttribute("isEmployee", false);
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "success");
                 } else {

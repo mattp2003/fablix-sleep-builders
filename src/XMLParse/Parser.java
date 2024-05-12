@@ -35,21 +35,23 @@ public class Parser {
 
     public void run() throws SQLException, ParserConfigurationException, SAXException, IOException {
         //set genre table
-        genreMap.put("Susp", "Thriller");
-        genreMap.put("CnR", "Cops and Robbers");
-        genreMap.put("Dram", "Drama");
-        genreMap.put("West", "Western");
-        genreMap.put("Myst", "Mystery");
-        genreMap.put("S.F.", "Sci-Fi");
-        genreMap.put("Advt", "Adventure");
-        genreMap.put("Horr", "Horror");
-        genreMap.put("Romt", "Romance");
-        genreMap.put("Comd", "Comedy");
-        genreMap.put("Musc", "Musical");
-        genreMap.put("Docu", "Documentary");
-        genreMap.put("Porn", "Adult");
-        genreMap.put("Noir", "Noir");
-        genreMap.put("BioP", "Biography");
+        genreMap.put("susp", "Thriller");
+        genreMap.put("cnr", "Cops and Robbers");
+        genreMap.put("dram", "Drama");
+        genreMap.put("west", "Western");
+        genreMap.put("myst", "Mystery");
+        genreMap.put("s.f.", "Sci-Fi");
+        genreMap.put("scfi", "Sci-Fi");
+        genreMap.put("advt", "Adventure");
+        genreMap.put("horr", "Horror");
+        genreMap.put("romt", "Romance");
+        genreMap.put("comd", "Comedy");
+        genreMap.put("musc", "Musical");
+        genreMap.put("docu", "Documentary");
+        genreMap.put("porn", "Adult");
+        genreMap.put("noir", "Noir");
+        genreMap.put("biop", "Biography");
+        genreMap.put("actn", "Biography");
 
 
         String loginUser = "mytestuser";
@@ -328,7 +330,7 @@ public class Parser {
                     Element genre = (Element) genres.item(k);
                     String genreName = getTextValue(genre, "cat");
                     //System.out.println(genreName);
-                    if (genreName != null && genreMap.containsKey(genreName)) {
+                    if (genreName != null && genreMap.containsKey(genreName.toLowerCase())) {
 
                         genreNames.add(genreMap.get(genreName));
                     }

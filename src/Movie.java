@@ -46,7 +46,7 @@ public class Movie extends HttpServlet {
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
             //get movie details
-            String movieDataQuery = "SELECT id, rating, numVotes, title, year, director from ratings, movies where movies.id = ? and ratings.movieId = movies.id;";
+            String movieDataQuery = "SELECT id, title, rating, year, director from movies left join ratings on movies.id = ratings.movieId where movies.id = ?;";
             // Prepared Statement checked
             PreparedStatement movieStatement = conn.prepareStatement(movieDataQuery);
             movieStatement.setString(1, id);
@@ -85,7 +85,7 @@ public class Movie extends HttpServlet {
 
 
             //get movie genres
-            String genresQuery = "select genreId, name from genres_in_movies, genres where movieId = ? and genreId = genres.id;";
+            String genresQuery = "select distinct genreId, name from genres_in_movies, genres where movieId = ? and genreId = genres.id;";
             // Prepared Statement checked
             PreparedStatement genresStatement = conn.prepareStatement(genresQuery);
             genresStatement.setString(1, id);

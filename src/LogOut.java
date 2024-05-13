@@ -14,6 +14,6 @@ public class LogOut extends HttpServlet {
         if (session != null) {
             session.invalidate();
         }
-        response.sendRedirect("login.html");
+        response.sendRedirect("main/main.html");
     }
 }

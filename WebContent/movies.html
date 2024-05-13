@@ -46,31 +46,34 @@
     </div>
 
     <h1>Movies</h1>
-    <table id=nav_table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Navigation</th>
-        </tr>
-        </thead>
-
-        <tbody id=nav_body>
-        <tr>
-            <th>
-                <a href="index.html">Home</a>
-            </th>
-        </tr>
-        <tr>
-            <th>
-                <a href="movies.html">Movies</a>
-            </th>
-        </tr>
-        <tr>
-            <th>
-                <a href="stars.html">Stars</a>
-            </th>
-        </tr>
-        </tbody>
-    </table>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Navigation</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav nav-justified w-100">
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="movies.html">Movies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="stars.html">Stars</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./_dashboard/index.html" style="display: none">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./_dashboard/star.html" style="display: none">Add New Star</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./_dashboard/movie.html" style="display: none">Add New Movie</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
     <table class="genres">
         <tbody id="genre_body">

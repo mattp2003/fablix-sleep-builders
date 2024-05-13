@@ -102,12 +102,11 @@ public class HashParser {
         while (rs.next()){
             String title = rs.getString("title");
             String id = rs.getString("id");
-
+            MovieId.put(title, id);
             id = id.replaceAll("[^\\d.]", "");
             int idVal = Integer.parseInt(id);
             lastMovie = Math.max(lastMovie, idVal);
 
-            MovieId.put(title, id);
         }
     }
 
@@ -117,12 +116,11 @@ public class HashParser {
         while (rs.next()){
             String name = rs.getString("name");
             String id = rs.getString("id");
-
+            StarsId.put(name, id);
             id = id.replaceAll("[^\\d.]", "");
             int idVal = Integer.parseInt(id);
             lastStar = Math.max(lastStar, idVal);
 
-            StarsId.put(name, id);
         }
     }
 
@@ -132,12 +130,11 @@ public class HashParser {
         while (rs.next()){
             String name = rs.getString("name");
             String id = rs.getString("id");
-
+            GenreId.put(name, id);
             id = id.replaceAll("[^\\d.]", "");
             int idVal = Integer.parseInt(id);
             lastGenre = Math.max(lastGenre, idVal);
 
-            GenreId.put(name, id);
         }
     }
 
@@ -207,7 +204,7 @@ public class HashParser {
             //System.out.println(year);
             lastStar++;
             String newId = "nm" + String.format("%07d",lastStar);
-            System.out.println(newId);
+            //System.out.println(newId);
             StarsId.put(name, newId);
 
             String query = "INSERT INTO stars VALUES (" + stringValue(newId) + ", "+ stringValue(name) + ", "+ year + ")";
@@ -253,10 +250,10 @@ public class HashParser {
                     lastMovie++;
 
                     String newId = "tt" + String.format("%07d",lastMovie);
-                    System.out.println(newId);
+                    //System.out.println(newId);
                     MovieId.put(filmName, newId);
                     String query = "INSERT INTO movies VALUES (" + stringValue(newId) + ", "+ stringValue(filmName) + ", "+ year + ", "+ stringValue(directorName) + ")";
-                    System.out.println(query);
+                    //System.out.println(query);
                     statement.addBatch(query);
 
                     NodeList genres = film.getElementsByTagName("cats");
@@ -319,7 +316,7 @@ public class HashParser {
                 continue;
             }
 
-            String query = "INSERT INTO stars_in_movies VALUES(" + stringValue(actorId) +", " + stringValue(movieId) + ");";
+            String query = "INSERT IGNORE INTO stars_in_movies VALUES(" + stringValue(actorId) +", " + stringValue(movieId) + ");";
             //System.out.println(query);
             statement.addBatch(query);
             stars_in_moviesAdded++;

@@ -57,6 +57,7 @@ public class Parser {
         String loginUser = "mytestuser";
         String loginPasswd = "My6$Password";
         String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+        Class.forName("com.mysql.jdbc.Driver").newInstance();
         Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 
         try(Statement statement = connection.createStatement()) {
@@ -64,19 +65,22 @@ public class Parser {
             String starQuery = "select max(id) as m from stars;";
             ResultSet rs = statement.executeQuery(starQuery);
             if (rs.next() && rs.getString("m") != null){
-                maxStar = Integer.parseInt(rs.getString("m").substring(2)) + 1;
+                System.out.println(rs.getString("m"));
+                maxStar = Integer.parseInt(rs.getString("m").substring(2));
             }
 
             String movieQuery = "select max(id) as m from movies;";
             rs = statement.executeQuery(movieQuery);
             if (rs.next() && rs.getString("m") != null){
-                maxMovie = Integer.parseInt(rs.getString("m").substring(2)) + 1;
+                System.out.println(rs.getString("m"));
+                maxMovie = Integer.parseInt(rs.getString("m").substring(2));
             }
 
             String genreQuery = "select max(id) as m from genres;";
             rs = statement.executeQuery(genreQuery);
             if (rs.next() && rs.getString("m") != null){
-                maxGenre = Integer.parseInt(rs.getString("m")) + 1;
+                System.out.println(rs.getString("m"));
+                maxGenre = Integer.parseInt(rs.getString("m"));
             }
             System.out.println(maxStar + " " + maxMovie + " " + maxGenre);
 

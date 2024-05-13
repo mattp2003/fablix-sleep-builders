@@ -1,0 +1,26 @@
+.table-container {
+    margin: 20px auto;
+    width: 80%; /* Adjust this value as needed to control the table width */
+}
+
+.table-container h2 {
+    text-align: center;
+    margin-top: 55px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+    width: 50%;
+}
+
+th {
+    background-color: #f2f2f2;
+}

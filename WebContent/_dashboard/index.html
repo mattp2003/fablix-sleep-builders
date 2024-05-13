@@ -2,9 +2,256 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Employee's Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Navigation</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="../index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="star.html">Add New Star</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="movie.html">Add New Movie</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../movies.html">Movies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../stars.html">Stars</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <h1 style="text-align: center; margin-top: 30px;">Metadata</h1>
+    <div class="table-container">
+        <h2>Table for Movies</h2>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+            </tr>
+            <tr>
+                <td>id</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>title</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>year</td>
+                <td>INTEGER</td>
+            </tr>
+            <tr>
+                <td>director</td>
+                <td>VARCHAR</td>
+            </tr>
+        </table>
+        <h2>Table for Stars</h2>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+            </tr>
+            <tr>
+                <td>id</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>birthYear</td>
+                <td>INTEGER</td>
+            </tr>
+        </table>
 
+        <h2>Table for Stars in Movies</h2>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+            </tr>
+            <tr>
+                <td>starId</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>movieId</td>
+                <td>VARCHAR</td>
+            </tr>
+        </table>
+
+        <h2>Table for Genres</h2>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+            </tr>
+            <tr>
+                <td>id</td>
+                <td>INTEGER</td>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>VARCHAR</td>
+            </tr>
+        </table>
+
+        <h2>Table for Genres in Movies</h2>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+            </tr>
+            <tr>
+                <td>genreId</td>
+                <td>INTEGER</td>
+            </tr>
+            <tr>
+                <td>movieId</td>
+                <td>VARCHAR</td>
+            </tr>
+        </table>
+
+        <h2>Table for Credit Cards</h2>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+            </tr>
+            <tr>
+                <td>id</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>firstName</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>lastName</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>expiration</td>
+                <td>DATE</td>
+            </tr>
+        </table>
+
+        <h2>Table for Customers</h2>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+            </tr>
+            <tr>
+                <td>id</td>
+                <td>INTEGER</td>
+            </tr>
+            <tr>
+                <td>firstName</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>lastName</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>ccId</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>address</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>email</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>password</td>
+                <td>VARCHAR</td>
+            </tr>
+        </table>
+
+        <h2>Table for Sales</h2>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+            </tr>
+            <tr>
+                <td>id</td>
+                <td>INTEGER</td>
+            </tr>
+            <tr>
+                <td>customerId</td>
+                <td>INTEGER</td>
+            </tr>
+            <tr>
+                <td>movieId</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>saleDate</td>
+                <td>DATE</td>
+            </tr>
+        </table>
+        
+        <h2>Table for Ratings</h2>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+            </tr>
+            <tr>
+                <td>movieId</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>rating</td>
+                <td>FLOAT</td>
+            </tr>
+            <tr>
+                <td>numVotes</td>
+                <td>INTEGER</td>
+            </tr>
+        </table>
+        
+        <h2>Table for Employees</h2>
+        <table>
+            <tr>
+                <th>Column Name</th>
+                <th>Data Type</th>
+            </tr>
+            <tr>
+                <td>email</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>password</td>
+                <td>VARCHAR</td>
+            </tr>
+            <tr>
+                <td>fullname</td>
+                <td>VARCHAR</td>
+            </tr>
+        </table>
+    </div>
+    <script src="index.js"></script>
 </body>
 </html>

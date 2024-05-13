@@ -1,0 +1,44 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
+
+.text {
+    text-align: center;
+    color: #fffffe;
+}
+
+.text h1 {
+    font-size: 90px;
+}
+
+.text p {
+    font-size: 20px;
+}
+
+.full-height {
+    height: 100%;
+}
+.half-width {
+    width: 50%;
+    height: 100%;
+    float: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+#user-login {
+    background-color: #232946;
+}
+#employee-login {
+    background-color: #b8c1ec; 
+}
+
+#user-login:hover {
+    background-color: #121629; 
+}
+#employee-login:hover {
+    background-color: #eebbc3;
+}

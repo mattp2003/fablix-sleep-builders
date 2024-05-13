@@ -147,7 +147,6 @@ jQuery.ajax({
 
 
 let url = "api/movies"
-let some_url = url + window.location.search;
 
 /**
  * Once this .js is loaded, following scripts will be executed by the browser

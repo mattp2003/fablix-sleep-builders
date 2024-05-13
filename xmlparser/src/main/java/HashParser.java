@@ -77,7 +77,7 @@ public class HashParser {
             parseMovies(statement);
             System.out.println("Parsing casts");
             parseCasts(statement);
-
+            System.out.println("Executing Batch");
             statement.executeBatch();
 
             System.out.println(starsAdded + " stars added");

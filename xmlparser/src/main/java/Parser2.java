@@ -159,6 +159,7 @@ public class Parser2 {
                 String updateQuery = "INSERT INTO stars VALUES(" + stringValue("nm" + String.format("%07d",maxStar)) + ", " + stringValue(name) + ", " + year + ");";
                 //System.out.println(updateQuery);
                 statement.executeUpdate(updateQuery);
+                starsAdded++;
             }
 
         }
@@ -213,6 +214,7 @@ public class Parser2 {
                     String updateQuery = "INSERT INTO movies VALUES(" + stringValue("tt" + String.format("%07d",maxMovie)) + ", " + stringValue(filmName) + ", " + year + ", " + stringValue(directorName) + ");";
                     //System.out.println(updateQuery);
                     statement.executeUpdate(updateQuery);
+                    moviesAdded++;
 
                     NodeList genres = film.getElementsByTagName("cats");
                     ArrayList<String> genreNames = new ArrayList<>();

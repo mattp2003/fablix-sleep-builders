@@ -1,5 +1,3 @@
-DROP DATABASE moviedb;
-
 CREATE DATABASE moviedb;
 
 USE moviedb;

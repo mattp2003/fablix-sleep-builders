@@ -1,3 +1,4 @@
 .idea
 *.iml
 target/
+WebContent/WEB-INF/web.xml

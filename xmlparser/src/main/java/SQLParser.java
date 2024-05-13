@@ -57,8 +57,8 @@ public class SQLParser {
         Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 
         try(Statement statement = connection.createStatement()) {
-            System.out.println("Adding procedures");
-            addProcedures(statement);
+            //System.out.println("Adding procedures");
+            //addProcedures(statement);
 
             System.out.println("Parsing files");
             parseXmlFile();
@@ -298,56 +298,6 @@ public class SQLParser {
             return Integer.parseInt(year);
         }
         return Integer.parseInt(getTextValue(ele, tagName));
-    }
-    private void addProcedures(Statement statement){
-        String xmlMovies = "\n" +
-                "DELIMITER $$\n" +
-                "CREATE PROCEDURE xmlMovie(\n" +
-                "\tIN movie_title VARCHAR(100), IN movie_year INTEGER,\n" +
-                "    IN movie_director VARCHAR(100)\n" +
-                ")\n" +
-                "BEGIN\n" +
-                "\tDECLARE existing_movie_id VARCHAR(10);\n" +
-                "    DECLARE max_id VARCHAR(10);\n" +
-                "    DECLARE max_value INTEGER;\n" +
-                "    DECLARE new_id VARCHAR(10);\n" +
-                "    \n" +
-                "    SELECT id INTO existing_movie_id FROM movies WHERE title = movie_title LIMIT 1;\n" +
-                "    \n" +
-                "    IF movie_year IS NOT NULL AND existing_movie_id IS NULL THEN\n" +
-                "\t\tSELECT max(id) into max_id FROM movies;\n" +
-                "\t\tIF max_id IS NULL THEN\n" +
-                "\t\t\tSELECT 0 INTO max_value;\n" +
-                "\t\tELSE\n" +
-                "\t\t\tSELECT CAST(SUBSTRING(max_id, 3, 8) AS SIGNED) + 1 INTO max_value;\n" +
-                "        END IF;\n" +
-                "        \n" +
-                "        SELECT CONCAT(\"tt\", LPAD(CAST(max_value AS CHAR), 7, '0')) INTO new_id;\n" +
-                "        \n" +
-                "        INSERT INTO movies VALUES(new_id, movie_title, movie_year, movie_director);\n" +
-                "        \n" +
-                "        SELECT new_id as result;\n" +
-                "\tELSE\n" +
-                "        SELECT \"duplicate\" as result;\n" +
-                "\tEND IF;\n" +
-                "    \n" +
-                "END$$\n" +
-                "\n" +
-                "DELIMITER ;";
-        String xmlStar = "DELIMITER $$ CREATE PROCEDURE xmlStar( 	IN star_name VARCHAR(100), IN star_year INTEGER ) BEGIN 	DECLARE existing_star_id VARCHAR(10); DECLARE max_id VARCHAR(10); DECLARE max_value INTEGER; DECLARE new_id VARCHAR(10); SELECT id INTO existing_star_id FROM stars WHERE name = star_name LIMIT 1; IF existing_star_id IS NULL THEN 		SELECT max(id) into max_id FROM stars; 		IF max_id IS NULL THEN 			SELECT 0 INTO max_value; 		ELSE 			SELECT CAST(SUBSTRING(max_id, 3, 8) AS SIGNED) + 1 INTO max_value; END IF; SELECT CONCAT(\"nm\", LPAD(CAST(max_value AS CHAR), 7, '0')) INTO new_id; INSERT INTO stars VALUES(new_id, star_name, star_year); SELECT 0 as result; 	ELSE SELECT 1 as result; 	END IF; END$$ DELIMITER ;";
-        String xmlGenre = "DELIMITER $$ CREATE PROCEDURE xmlGenre( \tIN genre_name VARCHAR(100), \tIN movie_title VARCHAR(100) ) BEGIN \tDECLARE existing_movie_id VARCHAR(10); DECLARE existing_genre_id VARCHAR(10); SELECT id INTO existing_movie_id FROM movies WHERE title = movie_title LIMIT 1; SELECT id INTO existing_genre_id FROM genres WHERE name = genre_name LIMIT 1; IF existing_genre_id IS NULL THEN \t\tinsert into genres (name) values (genre_name); SELECT id INTO existing_genre_id FROM genres WHERE name = genre_name LIMIT 1; END IF; IF existing_movie_id IS NOT NULL THEN INSERT INTO genres_in_movies VALUES(existing_genre_id, existing_movie_id); SELECT \"added\" as result; \tELSE SELECT \"inconsistent\" as result; END IF; END $$ DELIMITER ;";
-        String xmlCasts = "DELIMITER $$ CREATE PROCEDURE xmlCasts( \tIN star_name VARCHAR(100), \tIN movie_id VARCHAR(10) ) BEGIN \tDECLARE existing_movie_id VARCHAR(10); DECLARE existing_star_id VARCHAR(10); SELECT id INTO existing_star_id FROM stars WHERE name = star_name LIMIT 1; IF existing_star_id IS NOT NULL AND movie_id IS NOT NULL THEN INSERT INTO stars_in_movies VALUES(existing_star_id, movie_id); \tEND IF; END $$ DELIMITER ;";
-
-        System.out.println(xmlMovies);
-        try {
-            statement.execute(xmlMovies);
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-
-
     }
 
     public static void main(String[] args) throws Exception{

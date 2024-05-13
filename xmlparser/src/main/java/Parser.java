@@ -235,9 +235,9 @@ public class Parser {
         System.out.println("Inserted " + genres_in_movies + " genres_in_movies");
 
         System.out.println(inconsistent_movies + " movies inconsistencies");
-        System.out.println(duplicate_movies + " duplicate movies");
+        //System.out.println(duplicate_movies + " duplicate movies");
         System.out.println(missing_movies + " movies not found");
-        System.out.println(duplicate_stars + " duplicate stars");
+        //System.out.println(duplicate_stars + " duplicate stars");
         System.out.println(missing_stars + " stars not found");
     }
     private String sqlValue(String s){

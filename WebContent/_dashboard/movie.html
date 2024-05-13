@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee's Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Navigation</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="../index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="star.html">Add New Star</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="movie.html">Add New Movie</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../movies.html">Movies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../stars.html">Stars</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Form for Adding a New Movie -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5 class="card-title" style="text-align: center;">Add New Movie</h5>
+            <form id="newMovieForm" method="POST">
+                <input type="hidden" name="type" value="addMovie">
+                <div class="form-group">
+                    <label for="movieName">Movie Title:</label>
+                    <input type="text" class="form-control" id="movieName" name="movieName" required>
+                </div>
+                <div class="form-group">
+                    <label for="movieYear">Year:</label>
+                    <input type="number" class="form-control" id="movieYear" name="movieYear" required>
+                </div>
+                <div class="form-group">
+                    <label for="director">Director:</label>
+                    <input type="text" class="form-control" id="director" name="director" required>
+                </div>
+                <div class="form-group">
+                    <label for="starName">Star Name:</label>
+                    <input type="text" class="form-control" id="starName" name="starName" required>
+                </div>
+                <div class="form-group">
+                    <label for="genre">Genre:</label>
+                    <input type="text" class="form-control" id="genre" name="genre" required>
+                </div>
+                <div id="addMovieResult" class="alert" style="display: none; text-align: center"></div>
+                <button type="submit" class="btn btn-primary">Add Movie</button>
+            </form>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>

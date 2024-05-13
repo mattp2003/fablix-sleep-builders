@@ -32,8 +32,8 @@ public class LoginFilter implements Filter {
         // Redirect to login page if the "user" attribute doesn't exist in session
         if (httpRequest.getSession().getAttribute("user") == null) {
 
-            //System.out.println("redirection to:" );
-            httpResponse.sendRedirect("/cs122b_sleep_builders_war/login.html");
+//            System.out.println("redirection to:" );
+            httpResponse.sendRedirect("/cs122b_sleep_builders_war/main/main.html");
 
 
         // Otherwise is logged in
@@ -66,6 +66,10 @@ public class LoginFilter implements Filter {
     }
 
     public void init(FilterConfig fConfig) {
+        allowedURIs.add("/cs122b_sleep_builders_war/main/main.html");
+        allowedURIs.add("/cs122b_sleep_builders_war/main/main.css");
+        allowedURIs.add("/cs122b_sleep_builders_war/main/main.js");
+
         allowedURIs.add("/cs122b_sleep_builders_war/login.html");
         allowedURIs.add("/cs122b_sleep_builders_war/login.js");
         allowedURIs.add("/cs122b_sleep_builders_war/api/login");

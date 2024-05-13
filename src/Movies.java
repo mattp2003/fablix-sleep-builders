@@ -159,10 +159,10 @@ public class Movies extends HttpServlet {
             queryBuilder.append("m.rating ");
             queryBuilder.append("FROM (select distinct movies.id, title, year, director, rating from movies ");
             queryBuilder.append("LEFT JOIN ratings as r ON movies.id = r.movieId ");
-            queryBuilder.append("INNER JOIN genres_in_movies gim ON movies.id = gim.movieId ");
-            queryBuilder.append("INNER JOIN genres g ON gim.genreId = g.id ");
-            queryBuilder.append("INNER JOIN stars_in_movies sim ON movies.id = sim.movieId ");
-            queryBuilder.append("INNER JOIN stars s ON sim.starId = s.id ");
+            queryBuilder.append("LEFT JOIN genres_in_movies gim ON movies.id = gim.movieId ");
+            queryBuilder.append("LEFT JOIN genres g ON gim.genreId = g.id ");
+            queryBuilder.append("LEFT JOIN stars_in_movies sim ON movies.id = sim.movieId ");
+            queryBuilder.append("LEFT JOIN stars s ON sim.starId = s.id ");
             queryBuilder.append("WHERE 1=1 ");
 
 
@@ -200,10 +200,10 @@ public class Movies extends HttpServlet {
                 queryBuilder.append("ORDER BY rating ").append(ratingOrder).append(", title ").append(titleOrder).append(" LIMIT ").append(max_movies + 1).append(" OFFSET ").append(offset).append(") as m ");
             }
 
-            queryBuilder.append("INNER JOIN stars_in_movies sim ON m.id = sim.movieId ");
-            queryBuilder.append("INNER JOIN stars s ON sim.starId = s.id ");
-            queryBuilder.append("INNER JOIN genres_in_movies gim ON m.id = gim.movieId ");
-            queryBuilder.append("INNER JOIN genres g ON gim.genreId = g.id ");
+            queryBuilder.append("LEFT JOIN stars_in_movies sim ON m.id = sim.movieId ");
+            queryBuilder.append("LEFT JOIN stars s ON sim.starId = s.id ");
+            queryBuilder.append("LEFT JOIN genres_in_movies gim ON m.id = gim.movieId ");
+            queryBuilder.append("LEFT JOIN genres g ON gim.genreId = g.id ");
             queryBuilder.append("GROUP BY m.id, m.rating ");
 
             if ("title".equals(sortBy)) {

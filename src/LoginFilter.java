@@ -40,13 +40,14 @@ public class LoginFilter implements Filter {
         } else {
             boolean isEmployee = (boolean) httpRequest.getSession().getAttribute("isEmployee");
 
-
+            System.out.println("You are accessing: " + httpRequest.getRequestURI());
             //accessing employee only paths
             if (httpRequest.getRequestURI().contains("/cs122b_sleep_builders_war/_dashboard")){
                 if (isEmployee){
                     chain.doFilter(request, response);
                 }
                 else{
+                    System.out.println("You are a user and attempting to access the dashboard, redirecting ... ");
                     httpResponse.sendRedirect("/cs122b_sleep_builders_war/");
                 }
             }

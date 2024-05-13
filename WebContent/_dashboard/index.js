@@ -26,7 +26,7 @@ function handleAddStarResult(resultData) {
     let messageDiv = $("#addStarResult"); // Use jQuery to select the message div
     console.log(resultData);
     if (resultData.success) {
-        messageDiv.text("Star added successfully!");
+        messageDiv.text("Star added successfully! " + resultData.message);
         messageDiv.removeClass("alert-danger").addClass("alert-success");
     } else {
         messageDiv.text("Failed to add star: " + resultData.message);
@@ -61,7 +61,7 @@ function handleAddMovieResult(resultData) {
     let messageDiv = $("#addMovieResult"); // Use jQuery to select the message div
     console.log(resultData);
     if (resultData.success) {
-        messageDiv.text("Movie added successfully!");
+        messageDiv.text("Movie added successfully! " + resultData.message);
         messageDiv.removeClass("alert-danger").addClass("alert-success");
     } else {
         messageDiv.text("Failed to add movie: " + resultData.message);

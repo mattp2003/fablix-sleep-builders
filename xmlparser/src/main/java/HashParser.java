@@ -1,3 +1,4 @@
+import com.mysql.cj.protocol.Resultset;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -8,40 +9,31 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
+import java.util.*;
 
 public class HashParser {
-    Map<String, String> genreMap = new HashMap<String, String>();
-    Map<String, Integer> genres2id = new HashMap<>();
-    Map<String, String> movies2id = new HashMap<>();
-    int lastMovieId = -1;
-    Map<String, String> stars2id = new HashMap<>();
-    int lastStarId = -1;
+    int lastMovie = 0;
+    Map<String, String> MovieId = new HashMap<>();
+    int lastStar = 0;
+    Map<String, String> StarsId = new HashMap<>();
+    int lastGenre = 0;
+    Map<String, String> GenreId = new HashMap<String, String>();
+
+    Map<String, String> genreMap = new HashMap<>();
 
     Document mainsDom;
     Document actorsDom;
     Document castsDom;
+    int starsAdded = 0;
+    int moviesAdded = 0;
+    int genresAdded = 0;
+    int stars_in_moviesAdded = 0;
+    int genres_in_moviesAdded = 0;
 
-    Map<String, Movie> xmlMovies = new HashMap<>();
-    Map<String, String> xmlStarsDob = new HashMap<>();
-    Map<String, ArrayList<String>> xmlCasts = new HashMap<>();
-
-    ArrayList<String> inconsistencies = new ArrayList<>();
-
-    int stars = 0;
-    int genres_added = 0;
-    int movies = 0;
-    int genres_in_movies = 0;
-    int stars_in_movies = 0;
-
-    int inconsistent_movies = 0;
-    int duplicate_movies = 0;
-    int missing_stars = 0;
-    int missing_movies = 0;
-    int duplicate_stars = 0;
+    int duplicateStars = 0;
+    int duplicateMovies = 0;
+    int inconsistentStars = 0;
+    int inconsistentMovies = 0;
 
     public void run() throws SQLException, ParserConfigurationException, SAXException, IOException {
         //set genre table
@@ -61,255 +53,91 @@ public class HashParser {
         genreMap.put("porn", "Adult");
         genreMap.put("noir", "Noir");
         genreMap.put("biop", "Biography");
-        genreMap.put("actn", "Biography");
+        genreMap.put("actn", "Action");
 
 
         String loginUser = "mytestuser";
         String loginPasswd = "My6$Password";
         String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+        //Class.forName("com.mysql.jdbc.Driver").newInstance();
         Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 
-        //load genres
-        //queryGenres(connection);
+        try(Statement statement = connection.createStatement()) {
+            //System.out.println("Adding procedures");
+            //addProcedures(statement);
+            QueryMovies(statement);
+            QueryStars(statement);
+            QueryGenres(statement);
 
-        //load movies
-        //queryMovies(connection);
+            System.out.println("Parsing files");
+            parseXmlFile();
+            System.out.println("Parsing stars");
+            parseStars(statement);
+            System.out.println("Parsing movies");
+            parseMovies(statement);
+            System.out.println("Parsing casts");
+            parseCasts(statement);
 
-        //load stars
-        //queryStars(connection);
-
-        // parse the xml file and get the dom object for all files
-        parseXmlFile();
-
-        parseMovies();
-        parseStars();
-        parseCasts();
-
-
-        Map<String, String> newMovieKey = new HashMap<>();
-        Map<String, String> newStarKey = new HashMap<>();
-
-        try (Statement statement = connection.createStatement()) {
-
-            //Add new movies to database
-            for (Map.Entry<String, Movie> entry : xmlMovies.entrySet()) {
-                Movie movie = entry.getValue();
-                String xmlId = entry.getKey();
-                String title = movie.getTitle();
-                if (title == null || title.isEmpty() || title.equals("null")){
-                    inconsistencies.add(movie.getDirector() + "'s movie with id " + xmlId + " was not added as there is no title");
-                    missing_movies++;
-                    inconsistent_movies++;
-                    continue;
-                }
-                if (movies2id.containsKey(title)){
-                    newMovieKey.put(xmlId, movies2id.get(title));
-                    duplicate_movies++;
-                }
-                else{
-                    lastMovieId+=1;
-                    movies++;
-                    String newId = "tt" + String.format("%07d",lastMovieId);
-                    newMovieKey.put(xmlId, newId);
-
-                    String year = "null";
-                    if (movie.getYear() != null){
-                        year = sqlValue(movie.getYear());
-                    }
-                    String director = "null";
-                    if (movie.getDirector() != null){
-                        director = sqlValue(movie.getDirector());
-                    }
-                    newId = sqlValue(newId);
-                    title = sqlValue(title);
-                    //System.out.println(newId + ", "  + title + ", " + year + ", " + director);
-                    String query = "INSERT INTO movies VALUES(" + newId + ", "  + title + ", " + year + ", " + director + ");";
-                    //System.out.println(query);
-
-                    statement.addBatch(query);
-                }
-            }
-            System.out.println("Adding new movies");
             statement.executeBatch();
-            statement.clearBatch();
-            System.out.println("Finished adding new movies");
 
-            //add genres
-            for (Map.Entry<String, Movie> entry : xmlMovies.entrySet()){
-                //also need to add genres of the movie
-                Movie movie = entry.getValue();
-                String id = newMovieKey.get(entry.getKey());
+            System.out.println(starsAdded + " stars added");
+            System.out.println(moviesAdded + " movies added");
+            System.out.println(genresAdded + " genres added");
+            System.out.println(stars_in_moviesAdded + " stars in movies");
+            System.out.println(genres_in_moviesAdded + " genres in movies");
 
-                if (id == null || id.equals("null")){
-                    inconsistencies.add(entry.getKey() + " has no ID in database and was not added");
-                    continue;
-                }
-
-                id = sqlValue(id);
-
-                for (String genre: movie.getGenres()){
-                    if (genres2id.get(genre) == null){
-                        continue;
-                    }
-                    String genreQuery = "INSERT INTO genres_in_movies VALUES(" + genres2id.get(genre) + ", " + id + ");";
-                    //System.out.println(genreQuery);
-                    statement.addBatch(genreQuery);
-                    //System.out.println(genreQuery);
-                    genres_in_movies++;
-                }
-
-            }
-            System.out.println("Adding new movie genres");
-            statement.executeBatch();
-            statement.clearBatch();
-            System.out.println("Finished adding new movie genres");
-
-
-            //add new actors
-            for (Map.Entry<String, String> entry : xmlStarsDob.entrySet()){
-                String name = entry.getKey();
-                String year = "null";
-                if (entry.getValue() != null){
-                    year = sqlValue(entry.getValue());
-                }
-
-                if (stars2id.containsKey(name)){
-                    newStarKey.put(name, stars2id.get(name));
-                    duplicate_stars++;
-                }
-                else{
-                    lastStarId+=1;
-                    stars++;
-                    String newId = "nm" + String.format("%07d",lastStarId);
-                    newStarKey.put(name, newId);
-
-                    String query = "INSERT INTO stars VALUES(" + sqlValue(newId) + ", "  + sqlValue(name) + ", " + year + ");";
-                    //System.out.println(query);
-                    statement.addBatch(query);
-                }
-            }
-
-            System.out.println("Adding new stars");
-            statement.executeBatch();
-            statement.clearBatch();
-            System.out.println("Finished adding new stars");
-
-            //add the casts
-            for (Map.Entry<String, ArrayList<String>> entry : xmlCasts.entrySet()){
-                String xmlMovieId = entry.getKey();
-                ArrayList<String> actors = entry.getValue();
-
-                String newMovieId = newMovieKey.get(xmlMovieId);
-                for (String actor : actors){
-                    String newStarId = newStarKey.get(actor);
-                    //System.out.println(newStarId);
-                    //System.out.println(newMovieId);
-                    if (newStarId == null || newStarId.equals("null")){
-                        inconsistencies.add(xmlMovieId + "'s actor"  + actor + " has no ID in database and was not added");
-                        missing_stars++;
-                        continue;
-                    }
-                    if (newMovieId == null || newMovieId.equals("null")){
-                        inconsistencies.add(actor + "'s casting in " + xmlMovieId + " was not added as the movie cannot be found in database");
-                        missing_movies++;
-                        continue;
-                    }
-
-                    String query = "INSERT INTO stars_in_movies VALUES(" + sqlValue(newStarId) + ", " + sqlValue(newMovieId) + ");";
-                    //System.out.println(query);
-                    statement.addBatch(query);
-                    stars_in_movies++;
-                }
-            }
-            System.out.println("Adding new stars_in_movies");
-            statement.executeBatch();
-            System.out.println("Finished adding stars_in_movies");
-        }
-        for (String i : inconsistencies){
-            System.out.println(i);
-        }
-        System.out.println("Inserted " + stars + " stars");
-        System.out.println("Inserted " + genres_added + " genres");
-        System.out.println("Inserted " + movies + " movies");
-        System.out.println("Inserted " + stars_in_movies + " stars_in_movies");
-        System.out.println("Inserted " + genres_in_movies + " genres_in_movies");
-
-        System.out.println(inconsistent_movies + " movies inconsistencies");
-        //System.out.println(duplicate_movies + " duplicate movies");
-        System.out.println(missing_movies + " movies not found");
-        //System.out.println(duplicate_stars + " duplicate stars");
-        System.out.println(missing_stars + " stars not found");
-    }
-    private String sqlValue(String s){
-        return "\"" + s + "\"";
-    }
-
-    private void queryGenres(Connection conn) throws SQLException {
-        System.out.println("Querying Genres");
-        try (Statement statement = conn.createStatement()){
-            String query = "SELECT max(id) as m from genres;";
-
-            ResultSet resultSet = statement.executeQuery(query);
-
-            int newId = 0;
-            boolean exists = resultSet.next();
-            if (exists){
-                newId = resultSet.getInt("m");
-            }
-
-
-            for (Map.Entry<String, String> entry : genreMap.entrySet()) {
-                String k = entry.getKey();
-                String v = entry.getValue();
-                System.out.println(v);
-                if (!genres2id.containsKey(v)){
-                    newId+=1;
-                    genres2id.put(v, newId);
-                    String addGenre = "INSERT INTO genres VALUES (" + newId + ", '" + v + "');";
-                    statement.addBatch(addGenre);
-                }
-            }
-            //System.out.println(statement.toString());
-            statement.executeBatch();
+            System.out.println(duplicateStars + " duplicate stars");
+            System.out.println(duplicateMovies + " duplicate movies");
+            System.out.println(inconsistentStars + " inconsistent stars");
+            System.out.println(inconsistentMovies + " inconsistent movies");
         }
         catch (Exception e){
-            System.out.println(e.toString());
-            System.out.println("Connection failed");
+            //System.out.println(e);
+            e.printStackTrace();
+        }
+    }
+    private void QueryMovies(Statement statement) throws SQLException {
+        String query = "SELECT id, title FROM movies;";
+        ResultSet rs = statement.executeQuery(query);
+        while (rs.next()){
+            String title = rs.getString("title");
+            String id = rs.getString("id");
+
+            id = id.replaceAll("[^\\d.]", "");
+            int idVal = Integer.parseInt(id);
+            lastMovie = Math.max(lastMovie, idVal);
+
+            MovieId.put(title, id);
         }
     }
 
-    private void queryMovies(Connection conn){
-        System.out.println("Querying Movies");
-        try (Statement statement = conn.createStatement()){
-            String query = "SELECT title, id from movies;";
+    private void QueryStars(Statement statement) throws SQLException {
+        String query = "SELECT id, name FROM stars;";
+        ResultSet rs = statement.executeQuery(query);
+        while (rs.next()){
+            String name = rs.getString("name");
+            String id = rs.getString("id");
 
-            ResultSet resultSet = statement.executeQuery(query);
+            id = id.replaceAll("[^\\d.]", "");
+            int idVal = Integer.parseInt(id);
+            lastStar = Math.max(lastStar, idVal);
 
-            while (resultSet.next()) {
-                movies2id.put(resultSet.getString("title"), resultSet.getString("id"));
-                lastMovieId = Math.max(Integer.parseInt(resultSet.getString("id").trim().replaceAll("[a-z]", "")), lastMovieId);
-            }
-        }
-        catch (Exception e){
-            System.out.println(e.toString());
-            System.out.println("Connection failed");
+            StarsId.put(name, id);
         }
     }
-    private void queryStars(Connection conn){
-        System.out.println("Querying stars");
-        try (Statement statement = conn.createStatement()){
-            String query = "SELECT name, id from stars;";
 
-            ResultSet resultSet = statement.executeQuery(query);
+    private void QueryGenres(Statement statement) throws SQLException {
+        String query = "SELECT id, name FROM genres;";
+        ResultSet rs = statement.executeQuery(query);
+        while (rs.next()){
+            String name = rs.getString("name");
+            String id = rs.getString("id");
 
-            while (resultSet.next()) {
-                stars2id.put(resultSet.getString("name"), resultSet.getString("id"));
-                lastStarId = Math.max(Integer.parseInt(resultSet.getString("id").trim().replaceAll("[a-z]", "")), lastStarId);
-            }
-        }
-        catch (Exception e){
-            System.out.println(e.toString());
-            System.out.println("Connection failed");
+            id = id.replaceAll("[^\\d.]", "");
+            int idVal = Integer.parseInt(id);
+            lastGenre = Math.max(lastGenre, idVal);
+
+            GenreId.put(name, id);
         }
     }
 
@@ -331,12 +159,67 @@ public class HashParser {
             error.printStackTrace();
         }
     }
+    private int getTotalStars(Statement statement) throws SQLException {
+        String starQuery = "select count(id) as c from stars;";
+        ResultSet rs = statement.executeQuery(starQuery);
+        rs.next();
+        return(Integer.parseInt(rs.getString("c")));
 
-    private void parseMovies() {
+    }
+    private int getTotalStarsInMovies(Statement statement) throws SQLException {
+        String starQuery = "select count(*) as c from stars_in_movies;";
+        ResultSet rs = statement.executeQuery(starQuery);
+        rs.next();
+        return(Integer.parseInt(rs.getString("c")));
+    }
+    private int getTotalGenres(Statement statement) throws SQLException {
+        String starQuery = "select count(*) as c from genres;";
+        ResultSet rs = statement.executeQuery(starQuery);
+        rs.next();
+        return(Integer.parseInt(rs.getString("c")));
+    }
+    private int getTotalGenresInMovies(Statement statement) throws SQLException {
+        String starQuery = "select count(*) as c from genres_in_movies;";
+        ResultSet rs = statement.executeQuery(starQuery);
+        rs.next();
+        return(Integer.parseInt(rs.getString("c")));
+    }
+    private void parseStars(Statement statement) throws SQLException{
+        // get the document root Element
+        Element documentElement = actorsDom.getDocumentElement();
+
+        NodeList nodeList = documentElement.getElementsByTagName("actor");
+
+        for (int i = 0; i < nodeList.getLength(); i++) {
+
+            Element star = (Element) nodeList.item(i);
+
+            String name = null;
+            name = getTextValue(star, "stagename").replaceAll("[^A-Za-z0-9 ]", "");
+
+            if (StarsId.containsKey(name)){
+                duplicateStars++;
+                continue;
+            }
+
+            String year = null;
+            year = getTextValue(star, "dob");
+            //System.out.println(year);
+            lastStar++;
+            String newId = "nm" + String.format("%07d",lastStar);
+            System.out.println(newId);
+            StarsId.put(name, newId);
+
+            String query = "INSERT INTO stars VALUES (" + stringValue(newId) + ", "+ stringValue(name) + ", "+ year + ")";
+            statement.addBatch(query);
+            starsAdded++;
+        }
+    }
+
+    private void parseMovies(Statement statement) throws SQLException {
         // get the document root Element
         Element documentElement = mainsDom.getDocumentElement();
 
-        // get a nodelist of employee Elements, parse each into Employee object
         NodeList nodeList = documentElement.getElementsByTagName("directorfilms");
         for (int i = 0; i < nodeList.getLength(); i++) {
 
@@ -360,71 +243,94 @@ public class HashParser {
                 String id = null;
                 id = getTextValue(film, "fid");
 
-                NodeList genres = film.getElementsByTagName("cats");
-                ArrayList<String> genreNames = new ArrayList<>();
-                for (int k = 0; k < genres.getLength(); k++) {
-                    Element genre = (Element) genres.item(k);
-                    String genreName = getTextValue(genre, "cat");
-                    System.out.println(genreName);
-                    if (genreName != null && genreMap.containsKey(genreName.toLowerCase())) {
 
-                        genreNames.add(genreMap.get(genreName.toLowerCase()));
-                        genres_added++;
+                if (MovieId.containsKey(filmName)){
+                    duplicateMovies++;
+                    System.out.println("Movie " + filmName + " is a duplicate");
+                }
+                else{
+                    moviesAdded++;
+                    lastMovie++;
+
+                    String newId = "tt" + String.format("%07d",lastMovie);
+                    System.out.println(newId);
+                    MovieId.put(filmName, newId);
+                    String query = "INSERT INTO movies VALUES (" + stringValue(newId) + ", "+ stringValue(filmName) + ", "+ year + ", "+ stringValue(directorName) + ")";
+                    System.out.println(query);
+                    statement.addBatch(query);
+
+                    NodeList genres = film.getElementsByTagName("cats");
+                    ArrayList<String> genreNames = new ArrayList<>();
+                    for (int k = 0; k < genres.getLength(); k++) {
+                        Element genre = (Element) genres.item(k);
+                        String xmlGenre = getTextValue(genre, "cat");
+                        //System.out.println(genreName);
+                        if (xmlGenre != null){
+                            if (genreMap.containsKey(xmlGenre.toLowerCase())) {
+                                xmlGenre = genreMap.get(xmlGenre.toLowerCase());
+                            }
+
+                            if (GenreId.containsKey(xmlGenre)){
+                                String genreId = GenreId.get(xmlGenre);
+                                String genreInsert = "INSERT INTO genres_in_movies VALUES(" + genreId + ", "+ stringValue(newId) + ")";
+                                statement.addBatch(genreInsert);
+                            }
+                            else{
+                                lastGenre++;
+                                GenreId.put(xmlGenre, "" + lastGenre);
+                                String newGenre = "INSERT INTO genres VALUES(" + lastGenre + ", "+ stringValue(xmlGenre) + ")";
+                                statement.addBatch(newGenre);
+                                String genreInsert = "INSERT INTO genres_in_movies VALUES(" + lastGenre + ", "+ stringValue(newId) + ")";
+                                statement.addBatch(genreInsert);
+                                genresAdded++;
+                            }
+                            genres_in_moviesAdded++;
+                        }
                     }
                 }
-                //System.out.println(filmName + " " + year + " " + directorName);
-                Movie movie = new Movie(filmName, year, directorName, genreNames);
-                xmlMovies.put(id, movie);
             }
         }
     }
-
-    private void parseStars(){
-        // get the document root Element
-        Element documentElement = actorsDom.getDocumentElement();
-
-        // get a nodelist of employee Elements, parse each into Employee object
-        NodeList nodeList = documentElement.getElementsByTagName("actor");
-        for (int i = 0; i < nodeList.getLength(); i++) {
-
-            // get the employee element
-            Element star = (Element) nodeList.item(i);
-
-            String name = null;
-            name = getTextValue(star, "stagename").replaceAll("[^A-Za-z0-9 ]", "");
-            String year = null;
-            year = getTextValue(star, "dob");
-           //System.out.println(name + " " + year);
-
-            xmlStarsDob.put(name, year);
-        }
-    }
-
-    private void parseCasts(){
+    private void parseCasts(Statement statement) throws SQLException {
         Element documentElement = castsDom.getDocumentElement();
 
-        // get a nodelist of employee Elements, parse each into Employee object
         NodeList nodeList = documentElement.getElementsByTagName("m");
-        //System.out.println(nodeList.getLength());
         for (int i = 0; i < nodeList.getLength(); i++) {
             Element e = (Element) nodeList.item(i);
 
             String actor = null;
             actor = getTextValue(e, "a");
-
-            String movieId = null;
-            movieId = getTextValue(e, "f");
-
-            if (xmlCasts.containsKey(movieId)){
-                xmlCasts.get(movieId).add(actor);
+            if (actor != null){
+                actor = actor.replaceAll("[^A-Za-z0-9 ]", "");
             }
-            else{
-                xmlCasts.put(movieId, new ArrayList<>());
-                xmlCasts.get(movieId).add(actor);
+            String actorId = StarsId.get(actor);
+            if (actorId == null){
+                System.out.println("Actor " + actor + " is missing");
+                inconsistentStars++;
+                continue;
             }
+
+            String movieTitle = null;
+            movieTitle = getTextValue(e, "t");
+            String movieId = MovieId.get(movieTitle);
+            if (movieId == null){
+                System.out.println("Movie " + movieTitle + " is missing");
+                inconsistentMovies++;
+                continue;
+            }
+
+            String query = "INSERT INTO stars_in_movies VALUES(" + stringValue(actorId) +", " + stringValue(movieId) + ");";
+            //System.out.println(query);
+            statement.addBatch(query);
+            stars_in_moviesAdded++;
         }
-        //System.out.println(xmlCasts.toString());
+    }
 
+    private String stringValue(String s){
+        if (s == null){
+            return null;
+        }
+        return "\"" + s + "\"";
     }
 
     private String getTextValue(Element element, String tagName) {
@@ -456,7 +362,6 @@ public class HashParser {
         return Integer.parseInt(getTextValue(ele, tagName));
     }
 
-
     public static void main(String[] args) throws Exception{
         // create an instance
         HashParser parser = new HashParser();
@@ -464,5 +369,4 @@ public class HashParser {
         // call run example
         parser.run();
     }
-
 }

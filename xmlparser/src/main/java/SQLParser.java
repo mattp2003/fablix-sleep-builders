@@ -15,6 +15,7 @@ public class SQLParser {
     Map<String, String> xmlMovieId = new HashMap<>();
     Map<String, String> MovieId = new HashMap<>();
     Map<String, String> genreMap = new HashMap<String, String>();
+    Set<String> missingActors = new HashSet<>();
     Document mainsDom;
     Document actorsDom;
     Document castsDom;
@@ -78,7 +79,7 @@ public class SQLParser {
             System.out.println(duplicateStars + " duplicate stars");
             System.out.println(duplicateMovies + " duplicate movies");
             System.out.println(inconsistentStars + " inconsistent stars");
-            System.out.println(inconsistentMovies + " inconsistent movies");
+            //System.out.println(inconsistentMovies + " inconsistent movies");
         }
         catch (Exception e){
             //System.out.println(e);
@@ -143,10 +144,6 @@ public class SQLParser {
 
             String name = null;
             name = getTextValue(star, "stagename").replaceAll("[^A-Za-z0-9 ]", "");
-            if (name == null){
-                inconsistentStars++;
-                continue;
-            }
 
             String year = null;
             year = getTextValue(star, "dob");

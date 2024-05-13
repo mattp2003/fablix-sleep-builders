@@ -9,13 +9,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Parser2 {
     Map<String, String> xmlMovieId = new HashMap<>();
     Map<String, String> genreMap = new HashMap<String, String>();
+    Set<String> missingActors = new HashSet<>();
+    Set<String> missingMovies = new HashSet<>();
     Document mainsDom;
     Document actorsDom;
     Document castsDom;
@@ -87,15 +87,16 @@ public class Parser2 {
             parseCasts(statement);
 
             int starsAdded = 0;
-            int moviesAdded = 0;
-            int genresAdded = 0;
-            int stars_in_moviesAdded = 0;
-            int genres_in_moviesAdded = 0;
+            System.out.println(starsAdded + " stars added");
+            System.out.println(moviesAdded + " movies added");
+            System.out.println(genresAdded + " genres added");
+            System.out.println(stars_in_moviesAdded + " stars in movies");
+            System.out.println(genres_in_moviesAdded + " genres in movies");
 
-            int duplicateStars = 0;
-            int duplicateMovies = 0;
-            int inconsistentStars = 0;
-            int inconsistentMovies = 0;
+            System.out.println(duplicateStars + " duplicate stars");
+            System.out.println(duplicateMovies + " duplicate movies");
+            System.out.println(inconsistentStars + " inconsistent stars");
+            System.out.println(inconsistentMovies + " inconsistent movies");
         }
         catch (Exception e){
             //System.out.println(e);
@@ -210,7 +211,7 @@ public class Parser2 {
                 else{
                     maxMovie++;
                     String updateQuery = "INSERT INTO movies VALUES(" + stringValue("tt" + String.format("%07d",maxMovie)) + ", " + stringValue(filmName) + ", " + year + ", " + stringValue(directorName) + ");";
-                    System.out.println(updateQuery);
+                    //System.out.println(updateQuery);
                     statement.executeUpdate(updateQuery);
 
                     NodeList genres = film.getElementsByTagName("cats");
@@ -226,7 +227,7 @@ public class Parser2 {
 
                             //check if genre exists
                             String checkGenre = "SELECT * from genres WHERE name = " + stringValue(xmlGenre) + ";";
-                            System.out.println(checkGenre);
+                            //System.out.println(checkGenre);
                             rs = statement.executeQuery(checkGenre);
 
                             boolean genreExists = rs.next();
@@ -266,8 +267,15 @@ public class Parser2 {
 
             String actor = null;
             actor = getTextValue(e, "a");
+
+            if (missingActors.contains(actor)){
+                //System.out.println("Actor " + actor + " is missing");
+                //inconsistentStars++;
+                continue;
+            }
             if (actor==null){
                 System.out.println("Actor " + actor + " is missing");
+                missingActors.add(actor);
                 inconsistentStars++;
                 continue;
             }
@@ -276,6 +284,7 @@ public class Parser2 {
             boolean actorExists = rs.next();
             if (!actorExists){
                 System.out.println("Actor " + actor + " is missing");
+                missingActors.add(actor);
                 inconsistentStars++;
                 continue;
             }
@@ -284,9 +293,15 @@ public class Parser2 {
 
             String movieTitle = null;
             movieTitle = getTextValue(e, "t");
+            if (missingMovies.contains(movieTitle)){
+                //System.out.println("Movie " + movieTitle + " is missing");
+                //inconsistentMovies++;
+                continue;
+            }
             //String title = xmlMovieId.get(movieTitle);
             if (movieTitle == null){
                 System.out.println("Movie " + movieTitle + " is missing");
+                missingMovies.add(movieTitle);
                 inconsistentMovies++;
                 continue;
             }
@@ -295,6 +310,7 @@ public class Parser2 {
             rs = statement.executeQuery(movieQuery);
             boolean movieExists = rs.next();
             if (!movieExists){
+                missingMovies.add(movieTitle);
                 System.out.println("Movie " + movieTitle + " is missing");
                 inconsistentMovies++;
                 continue;

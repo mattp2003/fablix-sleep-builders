@@ -140,6 +140,8 @@ public class Dashboard extends HttpServlet {
                 }
                 int rowsAffected = statement.executeUpdate();
                 jsonObject.addProperty("success", rowsAffected > 0);
+                String resultMessage = starName + " is added with id: " + newStarId;
+                jsonObject.addProperty("message", resultMessage);
             }
             return jsonObject;
         } catch (Exception e) {
@@ -151,7 +153,7 @@ public class Dashboard extends HttpServlet {
     private JsonObject addMovieToDatabase(String movieName, Integer movieYear, String director, String starName, String genre) {
         JsonObject jsonObject = new JsonObject();
         try (Connection conn = dataSource.getConnection()) {
-            String sqlCall = "{CALL add_movie(?, ?, ?, ?, ?, ?, ?, ?)}";
+            String sqlCall = "{CALL add_movie(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
             try (CallableStatement statement = conn.prepareCall(sqlCall)) {
                 String newMovieId = getNewMovieId(conn);
                 statement.setString(1, newMovieId);
@@ -168,8 +170,19 @@ public class Dashboard extends HttpServlet {
                 int newGenreId = getNewGenreId(conn);
                 statement.setInt(7, newGenreId);
                 statement.setString(8, genre);
+                statement.registerOutParameter(9, Types.VARCHAR);
+                statement.registerOutParameter(10, Types.VARCHAR);
+                statement.registerOutParameter(11, Types.INTEGER);
                 int rowsAffected = statement.executeUpdate();
-                jsonObject.addProperty("success", rowsAffected > 0);
+                if (rowsAffected > 0) {
+                    jsonObject.addProperty("success", true);
+                    String movieId = statement.getString(9);
+                    String starId = statement.getString(10);
+                    int genreId = statement.getInt(11);
+                    jsonObject.addProperty("message", "Movie's id: " + movieId + ", Star id: " + starId + ", Genre id: " + genreId);
+                } else {
+                    jsonObject.addProperty("success", false);
+                }
                 return jsonObject;
             } catch (Exception e) {
                 jsonObject.addProperty("message", "Procedure's Error: " + e.getMessage());

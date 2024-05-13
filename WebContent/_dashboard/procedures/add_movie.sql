@@ -10,7 +10,10 @@ CREATE PROCEDURE add_movie(
     IN new_star_id VARCHAR(10),
     IN star_name VARCHAR(100),
     IN new_genre_id INTEGER,
-    IN genre_name VARCHAR(32)
+    IN genre_name VARCHAR(32),
+    OUT out_movie_id VARCHAR(10),
+    OUT out_star_id VARCHAR(10),
+    OUT out_genre_id INTEGER
 )
 BEGIN
     DECLARE existing_star_id VARCHAR(10);
@@ -61,6 +64,10 @@ BEGIN
     
 	INSERT INTO stars_in_movies (starId, movieId) VALUES (star_id, movie_id);
 	INSERT INTO genres_in_movies (genreId, movieId) VALUES (genre_id, movie_id);
+
+    SELECT id INTO out_movie_id FROM movies WHERE title = movie_title AND year = movie_year AND director = movie_director LIMIT 1;
+    SELECT id INTO out_star_id FROM stars WHERE name = star_name LIMIT 1;
+    SELECT id INTO out_genre_id FROM genres WHERE name = genre_name LIMIT 1;
 
 END$$
 

@@ -366,7 +366,7 @@ public class Parser {
                     //System.out.println(genreName);
                     if (genreName != null && genreMap.containsKey(genreName.toLowerCase())) {
 
-                        genreNames.add(genreMap.get(genreName));
+                        genreNames.add(genreMap.get(genreName.toLowerCase()));
                         genres_added++;
                     }
                 }

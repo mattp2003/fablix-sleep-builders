@@ -84,9 +84,13 @@ public class Parser {
             }
             System.out.println(maxStar + " " + maxMovie + " " + maxGenre);
 
+            System.out.println("Parsing files");
             parseXmlFile();
+            System.out.println("Parsing stars");
             parseStars(statement);
+            System.out.println("Parsing movies");
             parseMovies(statement);
+            System.out.println("Parsing casts");
             parseCasts(statement);
 
             int starsAdded = 0;

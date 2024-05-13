@@ -70,13 +70,13 @@ public class Parser {
         Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
 
         //load genres
-        queryGenres(connection);
+        //queryGenres(connection);
 
         //load movies
-        queryMovies(connection);
+        //queryMovies(connection);
 
         //load stars
-        queryStars(connection);
+        //queryStars(connection);
 
         // parse the xml file and get the dom object for all files
         parseXmlFile();

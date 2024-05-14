@@ -19,7 +19,6 @@ BEGIN
     DECLARE existing_star_id VARCHAR(10);
     DECLARE existing_genre_id INTEGER;
     DECLARE existing_movie_id VARCHAR(10);
-    DECLARE new_genre_id INTEGER;
     DECLARE star_id VARCHAR(10);
     DECLARE genre_id INTEGER;
     DECLARE movie_id VARCHAR(10);

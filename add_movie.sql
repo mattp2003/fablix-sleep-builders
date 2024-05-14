@@ -1,4 +1,5 @@
 USE moviedb;
+drop procedure add_movie;
 
 DELIMITER $$
 
@@ -19,7 +20,6 @@ BEGIN
     DECLARE existing_star_id VARCHAR(10);
     DECLARE existing_genre_id INTEGER;
     DECLARE existing_movie_id VARCHAR(10);
-    DECLARE new_genre_id INTEGER;
     DECLARE star_id VARCHAR(10);
     DECLARE genre_id INTEGER;
     DECLARE movie_id VARCHAR(10);
@@ -51,7 +51,7 @@ SELECT existing_star_id INTO star_id;
 END IF;
 
     IF existing_genre_id is NULL THEN
-SELECT new_genre_id INTO genre_id;
+SELECT id from genres where name = genre_name INTO genre_id;
 ELSE
 SELECT existing_genre_id INTO genre_id;
 END IF;
@@ -61,6 +61,7 @@ SELECT new_movie_id INTO movie_id;
 ELSE
 SELECT existing_movie_id INTO movie_id;
 END IF;
+select genre_id;
 
 INSERT INTO stars_in_movies (starId, movieId) VALUES (star_id, movie_id);
 INSERT INTO genres_in_movies (genreId, movieId) VALUES (genre_id, movie_id);

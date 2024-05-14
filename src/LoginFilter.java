@@ -67,17 +67,32 @@ public class LoginFilter implements Filter {
     }
 
     public void init(FilterConfig fConfig) {
-        allowedURIs.add("/cs122b_sleep_builders_war/main/main.html");
-        allowedURIs.add("/cs122b_sleep_builders_war/main/main.css");
-        allowedURIs.add("/cs122b_sleep_builders_war/main/main.js");
+        String base = "/cs122b_sleep_builders_war/";
+        allowedURIs.add(base + "main/main.html");
+        allowedURIs.add(base + "main/main.css");
+        allowedURIs.add(base + "main/main.js");
 
-        allowedURIs.add("/cs122b_sleep_builders_war/login.html");
-        allowedURIs.add("/cs122b_sleep_builders_war/login.js");
-        allowedURIs.add("/cs122b_sleep_builders_war/api/login");
+        allowedURIs.add(base + "login.html");
+        allowedURIs.add(base + "login.js");
+        allowedURIs.add(base + "api/login");
 
-        allowedURIs.add("/cs122b_sleep_builders_war/_dashboard/login.html");
-        allowedURIs.add("/cs122b_sleep_builders_war/_dashboard/login.js");
-        allowedURIs.add("/cs122b_sleep_builders_war/api/employeeLogin");
+        allowedURIs.add(base + "_dashboard/login.html");
+        allowedURIs.add(base + "_dashboard/login.js");
+        allowedURIs.add(base + "api/employeeLogin");
+
+
+        String base2 = "/cs122b_sleep_builders_war/";
+        allowedURIs.add(base2 + "main/main.html");
+        allowedURIs.add(base2 + "main/main.css");
+        allowedURIs.add(base2 + "main/main.js");
+
+        allowedURIs.add(base2 + "login.html");
+        allowedURIs.add(base2 + "login.js");
+        allowedURIs.add(base2 + "api/login");
+
+        allowedURIs.add(base2 + "_dashboard/login.html");
+        allowedURIs.add(base2 + "_dashboard/login.js");
+        allowedURIs.add(base2 + "api/employeeLogin");
     }
 
     public void destroy() {

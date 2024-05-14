@@ -173,8 +173,10 @@ public class Dashboard extends HttpServlet {
                 statement.registerOutParameter(9, Types.VARCHAR);
                 statement.registerOutParameter(10, Types.VARCHAR);
                 statement.registerOutParameter(11, Types.INTEGER);
+                System.out.println(statement.toString());
                 int rowsAffected = statement.executeUpdate();
-                if (rowsAffected > 0) {
+                System.out.println(rowsAffected);
+                if (rowsAffected != 0) {
                     jsonObject.addProperty("success", true);
                     String movieId = statement.getString(9);
                     String starId = statement.getString(10);

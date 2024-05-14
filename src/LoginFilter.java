@@ -11,6 +11,7 @@ import java.util.ArrayList;
  */
 @WebFilter(filterName = "LoginFilter", urlPatterns = "/*")
 public class LoginFilter implements Filter {
+    String base = "/cs122b-sleep-builders/";
     private final ArrayList<String> allowedURIs = new ArrayList<>();
 
     /**
@@ -33,7 +34,7 @@ public class LoginFilter implements Filter {
         if (httpRequest.getSession().getAttribute("user") == null) {
 
 //            System.out.println("redirection to:" );
-            httpResponse.sendRedirect("/cs122b_sleep_builders_war/main/main.html");
+            httpResponse.sendRedirect(base + "main/main.html");
 
 
         // Otherwise is logged in
@@ -42,13 +43,13 @@ public class LoginFilter implements Filter {
 
             System.out.println("You are accessing: " + httpRequest.getRequestURI());
             //accessing employee only paths
-            if (httpRequest.getRequestURI().contains("/cs122b_sleep_builders_war/_dashboard")){
+            if (httpRequest.getRequestURI().contains(base + "_dashboard")){
                 if (isEmployee){
                     chain.doFilter(request, response);
                 }
                 else{
                     System.out.println("You are a user and attempting to access the dashboard, redirecting ... ");
-                    httpResponse.sendRedirect("/cs122b_sleep_builders_war/");
+                    httpResponse.sendRedirect(base);
                 }
             }
             else{
@@ -67,7 +68,6 @@ public class LoginFilter implements Filter {
     }
 
     public void init(FilterConfig fConfig) {
-        String base = "/cs122b_sleep_builders_war/";
         allowedURIs.add(base + "main/main.html");
         allowedURIs.add(base + "main/main.css");
         allowedURIs.add(base + "main/main.js");

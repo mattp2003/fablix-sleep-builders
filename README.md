@@ -8,6 +8,17 @@ XML parser
 Matthew:
 Employee dashboard 
 
+Files with Prepared Statement:
+- Dashboard.java
+- EmployeeLogin.java
+- Genre.java
+- Genres.java
+- Login.java
+- Movie.java
+- Movies.java
+- Pay.java
+- SingleStarServlet.java
+- Stars.java
 
 Optimizations:
 1. Order of file parsing. First parsed actors file, to add as many actors as possible, as this file has the least conflicts. Followed by movies, which also has minimal relational inconsistencies. By saving the casts for last, we are able to skip requerying which leads us into the next optimization, we don't have to repeat and requery every actor/movie for every entry of the cast.

@@ -12,12 +12,6 @@ import jakarta.servlet.http.HttpSession;
 
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.*;
 
 
 @WebServlet(name = "MovieHistory", urlPatterns = "/api/movieHistory")

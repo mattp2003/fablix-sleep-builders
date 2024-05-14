@@ -176,7 +176,7 @@ public class Dashboard extends HttpServlet {
                 System.out.println(statement.toString());
                 int rowsAffected = statement.executeUpdate();
                 System.out.println(rowsAffected);
-                if (rowsAffected > 0) {
+                if (rowsAffected != 0) {
                     jsonObject.addProperty("success", true);
                     String movieId = statement.getString(9);
                     String starId = statement.getString(10);

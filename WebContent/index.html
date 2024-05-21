@@ -86,14 +86,27 @@
          otherwise the url is relative to the root path-->
     <div id="searchBar">
         <form id="searchForm" method="GET" action="./movies.html">
-            <input type="text" id="title" name="title" placeholder="Search for title...">
-            <input type="text" id="year" name="year" placeholder="Search for year...">
-            <input type="text" id="director" name="director" placeholder="Search for director...">
-            <input type="text" id="star" name="star" placeholder="Search for star...">
-            <input type="submit" value="Search" >
+            <div id="title-container">
+                <input type="text" id="title" name="title" placeholder="Search for title...">
+                <div id="title-autocomplete">
+                </div>
+            </div>
+            <div>
+                <input type="text" id="year" name="year" placeholder="Search for year...">
+            </div>
+            <div>
+                <input type="text" id="director" name="director" placeholder="Search for director...">
+            </div>
+            <div>
+                <input type="text" id="star" name="star" placeholder="Search for star...">
+            </div>
+            <div>
+                <input type="submit" value="Search" >
+            </div>
         </form>
     </div>
 </body>
 
+<script src="./index.js"></script>
 
 </html>

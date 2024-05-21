@@ -43,3 +43,20 @@ a {
 a:hover {
     text-decoration: underline;
 }
+
+#searchForm {
+    display: flex; 
+    flex-direction: row;
+
+}
+
+#title-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.suggestion{
+    border-radius: 1px;
+    border-color: black;
+    border-style: solid;
+}

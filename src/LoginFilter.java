@@ -78,7 +78,6 @@ public class LoginFilter implements Filter {
         allowedURIs.add(base + "api/login");
 
         allowedURIs.add(base + "_dashboard/login.html");
-        allowedURIs.add(base + "_dashboard/login.js");
         allowedURIs.add(base + "api/employeeLogin");
 
         allowedURIs.add(base2 + "main/main.html");
@@ -90,7 +89,6 @@ public class LoginFilter implements Filter {
         allowedURIs.add(base2 + "api/login");
 
         allowedURIs.add(base2 + "_dashboard/login.html");
-        allowedURIs.add(base2 + "_dashboard/login.js");
         allowedURIs.add(base2 + "api/employeeLogin");
     }
 

@@ -45,14 +45,20 @@ public class Login extends HttpServlet {
 
 
         String email = request.getParameter("email");
-        String unverified_password = request.getParameter("password");
+        String password = request.getParameter("password");
+        boolean isEmployee = request.getParameter("isEmployee").equals("true");
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
 
         try (Connection conn = dataSource.getConnection()){
-            String query = "SELECT password from customers where email=?;";
-            // Prepared Statement checked
+            String query;
+            if (isEmployee) {
+                query = "SELECT password from employees where email=?;";
+            } else {
+                query = "SELECT password from customers where email=?;";
+            }
+
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, email);
             ResultSet rs = statement.executeQuery();
@@ -65,10 +71,18 @@ public class Login extends HttpServlet {
                 responseJsonObject.addProperty("message", "user with email " + email + " doesn't exist");
             }
             else{
-                boolean isVerified = VerifyPassword.verifyCredentials(email, unverified_password);
-                if (isVerified){
+                boolean loginSuccess;
+                if (isEmployee) {
+                    String queriedPassword = rs.getString("password");
+                    loginSuccess = password.equals(queriedPassword);
+                } else {
+                    loginSuccess = VerifyPassword.verifyCredentials(email, password);
+                }
+
+                if (loginSuccess) {
                     request.getSession().setAttribute("user", new User(email));
-                    request.getSession().setAttribute("isEmployee", false);
+                    request.getSession().setAttribute("isEmployee", isEmployee);
+                    responseJsonObject.addProperty("isEmployee", isEmployee);
                     responseJsonObject.addProperty("status", "success");
                     responseJsonObject.addProperty("message", "success");
                 } else {

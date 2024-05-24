@@ -56,27 +56,28 @@ function handleMovieResult(data) {
             + resultData[i]["title"] +     // display star_name for the link text
             '</a>' +
             "</th>";
-        rowHTML += "<th>" + resultData[i]["year"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["director"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["genres"] + "</th>";
-        let stars = resultData[i]["stars"].split(", ");
-        let stars_id = resultData[i]["stars_id"].split(", ");
-        let stars_info = build_stars(stars, stars_id);
+        rowHTML += "<th>" + (resultData[i]["year"] === null ? "No Year Found" : resultData[i]["year"]) + "</th>";
+        rowHTML += "<th>" + (resultData[i]["director"] === null ? "No Director Found" : resultData[i]["director"]) + "</th>";
+        rowHTML += "<th>" + (resultData[i]["genres"] === null ? "No Genre Found" : resultData[i]["genres"]) + "</th>";
+        if (resultData[i]["stars"] === null) {
+            rowHTML += "<th>No Star Found</th>";
+        } else {
+            let stars = resultData[i]["stars"].split(", ");
+            let stars_id = resultData[i]["stars_id"].split(", ");
+            let stars_info = build_stars(stars, stars_id);
 
-        rowHTML += "<th>"
-        for (let i = 0; i < stars.length; i++){
-            if (i !== 0){
-                rowHTML += "; "
+            rowHTML += "<th>"
+            for (let i = 0; i < stars.length; i++){
+                if (i !== 0){
+                    rowHTML += "; "
+                }
+                rowHTML += '<a href="single-star.html?id=' + stars_info[stars[i]] + '">'
+                    + stars[i] + '</a>'
             }
-            rowHTML += '<a href="single-star.html?id=' + stars_info[stars[i]] + '">'
-                + stars[i] + '</a>'
         }
         rowHTML += "</th>"
-
-        rowHTML += "<th>" + resultData[i]["rating"] + "</th>";
-
+        rowHTML += "<th>" + (resultData[i]["rating"] === null ? "No Rating Found" : resultData[i]["rating"]) + "</th>";
         rowHTML += "<th><button onclick=\"Order(\'increase\', \'" + resultData[i]['id'] + "\', \'" + resultData[i]['title'] + "\')\">Add to Cart</button></th>"
-
         rowHTML += "</tr>";
         // Append the row created to the table body, which will refresh the page
         moviesTableBodyElement.append(rowHTML);

@@ -148,7 +148,6 @@ public class Movies extends HttpServlet {
 
             //build query
             String query;
-            PreparedStatement statement;
             StringBuilder queryBuilder;
 
             queryBuilder = new StringBuilder();
@@ -168,7 +167,7 @@ public class Movies extends HttpServlet {
 
             //search parameters
             if (searchTitle != null && !searchTitle.isEmpty()) {
-                queryBuilder.append("AND movies.title LIKE ? ");
+                queryBuilder.append("AND MATCH (movies.title) AGAINST (? IN BOOLEAN MODE) ");
             }
             if (searchYear != null && !searchYear.isEmpty()) {
                 queryBuilder.append("AND movies.year = ? ");
@@ -213,21 +212,23 @@ public class Movies extends HttpServlet {
             }
 
             query = queryBuilder.toString();
-
             int paramIndex = 1;
             // PreparedStatement checked!
-            statement = conn.prepareStatement(query);
+            PreparedStatement statement = conn.prepareStatement(query);
             if (searchTitle != null && !searchTitle.isEmpty()) {
-                statement.setString(paramIndex++, "%" + searchTitle + "%");
+                statement.setString(paramIndex, searchTitle);
+                paramIndex++;
             }
             if (searchYear != null && !searchYear.isEmpty()) {
-                statement.setInt(paramIndex++, Integer.parseInt(searchYear));
+                statement.setInt(paramIndex, Integer.parseInt(searchYear));
+                paramIndex++;
             }
             if (searchDirector != null && !searchDirector.isEmpty()) {
-                statement.setString(paramIndex++, "%" + searchDirector + "%");
+                statement.setString(paramIndex, "%" + searchDirector + "%");
+                paramIndex++;
             }
             if (searchStarName != null && !searchStarName.isEmpty()) {
-                statement.setString(paramIndex++, "%" + searchStarName + "%");
+                statement.setString(paramIndex, "%" + searchStarName + "%");
             }
             //statement.setInt(paramIndex++, max_movies + 1); //add 1 to check if there are elements on page after
             //statement.setInt(paramIndex, offset);
@@ -247,7 +248,6 @@ public class Movies extends HttpServlet {
                 String stars_id = rs.getString("stars_id");
                 String genres = rs.getString("genres");
                 double rating = rs.getDouble("rating");
-
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("id", movieID);
                 jsonObject.addProperty("title", movieTitle);
@@ -272,8 +272,8 @@ public class Movies extends HttpServlet {
             JSONresult.add("movies", jsonArray);
             JSONresult.addProperty("page", currentPage);
             JSONresult.addProperty("hasNext", hasNext);
-
-            response.getWriter().write(JSONresult.toString());
+            String front_end_rs = JSONresult.toString();
+            response.getWriter().write(front_end_rs);
             // Set response status to 200 (OK)
             response.setStatus(200);
 

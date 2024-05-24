@@ -33,12 +33,16 @@ function handleLookup(query, doneCallback) {
 
 function handleLookupAjaxSuccess(data, query, doneCallback) {
     doneCallback({ suggestions: cache_storage[query] });
+
 }
 
 function handleSelectSuggestion(suggestion) {
     // TODO: jump to the specific result page based on the selected suggestion
 
-    console.log("you select " + suggestion["value"] + " with ID " + suggestion["data"]["movieId"])
+    //console.log("you select " + suggestion["value"] + " with ID " + suggestion["data"]["movieId"])
+    const id = suggestion["data"]["movieId"]
+
+    window.location.href = "./movie.html?id=" + id;
 }
 
 $('#autocomplete').autocomplete({
@@ -53,6 +57,8 @@ $('#autocomplete').autocomplete({
 
 function handleNormalSearch(query) {
     console.log("doing normal search with query: " + query);
+
+    window.location.href = "./movies.html?title=" + query;
 }
 
 $('#autocomplete').keypress(function(event) {

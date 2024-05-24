@@ -15,6 +15,12 @@ public class LoginFilter implements Filter {
     String base2 = "/cs122b_sleep_builders_war/";
     private final ArrayList<String> allowedURIs = new ArrayList<>();
 
+    String getBaseUrl(HttpServletRequest request) {
+        String baseUrl = request.getRequestURL().substring(0, request.getRequestURL().length() - request.getRequestURI().length()) + request.getContextPath();
+        System.out.println(request.getRequestURI());
+        System.out.println(request.getContextPath());
+        return baseUrl;
+    }
     /**
      * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
      */
@@ -24,6 +30,7 @@ public class LoginFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         System.out.println("LoginFilter: " + httpRequest.getRequestURI());
+        //System.out.println(getBaseUrl(httpRequest));
 
         // Check if this URL is allowed to access without logging in
         if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
@@ -35,7 +42,7 @@ public class LoginFilter implements Filter {
         if (httpRequest.getSession().getAttribute("user") == null) {
 
 //            System.out.println("redirection to:" );
-            httpResponse.sendRedirect(base + "main/main.html");
+            httpResponse.sendRedirect(httpRequest.getRequestURI() + "main/main.html");
 
 
         // Otherwise is logged in
@@ -44,13 +51,13 @@ public class LoginFilter implements Filter {
 
             System.out.println("You are accessing: " + httpRequest.getRequestURI());
             //accessing employee only paths
-            if (httpRequest.getRequestURI().contains(base + "_dashboard")){
+            if (httpRequest.getRequestURI().contains(httpRequest.getRequestURI() + "_dashboard")){
                 if (isEmployee){
                     chain.doFilter(request, response);
                 }
                 else{
                     System.out.println("You are a user and attempting to access the dashboard, redirecting ... ");
-                    httpResponse.sendRedirect(base);
+                    httpResponse.sendRedirect(httpRequest.getRequestURI());
                 }
             }
             else{

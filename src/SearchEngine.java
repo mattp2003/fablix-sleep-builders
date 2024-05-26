@@ -34,10 +34,10 @@ public class SearchEngine extends HttpServlet {
         try (Connection conn = dataSource.getConnection()){
             JsonArray jsonArray = new JsonArray();
             String queryTitle = request.getParameter("query");
-            queryTitle = queryTitle.replace(" ", "* ");
+            queryTitle = queryTitle.strip().replace(" ", "* ");
             queryTitle += "*";
             int dist = (request.getParameter("query").length()+1)/2;
-            String sqlQuery = "SELECT id, title FROM movies WHERE (MATCH (title) AGAINST ('" + queryTitle + "' IN BOOLEAN MODE) OR title LIKE \"%" + request.getParameter("query") + "%\" OR edth(title, \"" + request.getParameter("query") + "\", " + dist +"));";
+            String sqlQuery = "SELECT id, title FROM movies WHERE (MATCH (title) AGAINST ('" + queryTitle + "' IN BOOLEAN MODE) OR title LIKE \"%" + request.getParameter("query").strip() + "%\" OR edth(title, \"" + request.getParameter("query").strip() + "\", " + dist +"));";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
             ResultSet resultSet = statement.executeQuery();
 
@@ -52,7 +52,6 @@ public class SearchEngine extends HttpServlet {
             System.out.println(results);
             response.getWriter().write(results);
         } catch (Exception e) {
-            System.out.println(e);
             response.sendError(500, e.getMessage());
         }
     }

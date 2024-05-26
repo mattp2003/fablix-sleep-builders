@@ -107,8 +107,8 @@ public class Movies extends HttpServlet {
             String requestSearchTitle = request.getParameter("title");
             String queryTitle = "*";
             if (requestSearchTitle != null && !requestSearchTitle.trim().isEmpty()){
-                searchTitle = requestSearchTitle;
-                queryTitle = searchTitle;
+                searchTitle = requestSearchTitle.strip();
+                queryTitle = searchTitle.strip();
                 queryTitle = queryTitle.replace(" ", "* ");
                 queryTitle += "*";
             }

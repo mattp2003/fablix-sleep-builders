@@ -36,7 +36,8 @@ public class SearchEngine extends HttpServlet {
             String queryTitle = request.getParameter("query");
             queryTitle = queryTitle.replace(" ", "* ");
             queryTitle += "*";
-            String sqlQuery = "SELECT id, title FROM movies WHERE MATCH (title) AGAINST ('" + queryTitle + "' IN BOOLEAN MODE);";
+            int dist = queryTitle.length()/3;
+            String sqlQuery = "SELECT id, title FROM movies WHERE (MATCH (title) AGAINST ('" + queryTitle + "' IN BOOLEAN MODE) OR title LIKE \"%" + queryTitle + "%\" OR edth(name, \"" + queryTitle + "\", " + dist +"));";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
             ResultSet resultSet = statement.executeQuery();
 

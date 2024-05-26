@@ -105,8 +105,12 @@ public class Movies extends HttpServlet {
                 startsWith = requestStartsWith;
             }
             String requestSearchTitle = request.getParameter("title");
+            String queryTitle;
             if (requestSearchTitle != null && !requestSearchTitle.trim().isEmpty()){
                 searchTitle = requestSearchTitle;
+                queryTitle = searchTitle;
+                queryTitle = queryTitle.replace(" ", "* ");
+                queryTitle += "*";
             }
             String requestSearchYear = request.getParameter("year");
             if (requestSearchYear != null && !requestSearchYear.trim().isEmpty()){
@@ -167,7 +171,7 @@ public class Movies extends HttpServlet {
 
             //search parameters
             if (searchTitle != null && !searchTitle.isEmpty()) {
-                queryBuilder.append("AND MATCH (movies.title) AGAINST (? IN BOOLEAN MODE) ");
+                queryBuilder.append("(AND MATCH (movies.title) AGAINST (? IN BOOLEAN MODE)) ");
             }
             if (searchYear != null && !searchYear.isEmpty()) {
                 queryBuilder.append("AND movies.year = ? ");

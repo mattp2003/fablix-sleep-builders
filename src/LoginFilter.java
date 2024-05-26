@@ -29,7 +29,7 @@ public class LoginFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        System.out.println("LoginFilter: " + httpRequest.getRequestURI());
+        System.out.println("LoginFilter: " + httpRequest.getContextPath());
         //System.out.println(getBaseUrl(httpRequest));
 
         // Check if this URL is allowed to access without logging in
@@ -41,8 +41,7 @@ public class LoginFilter implements Filter {
         // Redirect to login page if the "user" attribute doesn't exist in session
         if (httpRequest.getSession().getAttribute("user") == null) {
 
-//            System.out.println("redirection to:" );
-            httpResponse.sendRedirect(httpRequest.getRequestURI() + "main/main.html");
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/main/main.html");
 
 
         // Otherwise is logged in

@@ -3,9 +3,9 @@
     
     - #### Names: William Chu, Matthew Phan
     
-    - #### Project 5 Video Demo Link:
+    - #### Project 5 Video Demo Link: https://drive.google.com/file/d/1WEGwBcWXQplsEIk8569AKwvZxsmGHOYp/view?usp=sharing
 
-    - #### Instruction of deployment:
+    - #### Instruction of deployment: Compile using mvn package in the backend servers (master and slave). Deploy onto Apache Tomcat, on backend servers. Connect with Apache load balancer that redirects to deployed web apps.
 
     - #### Collaborations and Work Distribution:
       - William: AWS, Fuzzy Search
@@ -40,4 +40,4 @@
          -    gcp-load-balancer.conf
 
     - #### How read/write requests were routed to Master/Slave SQL?
-        - Requests were routed with the load balancer, which evenly distributes to the Master and Slave. Furthermore, only the Master is able to write, but both instances are able to read. 
+        - Requests were routed with the load balancer, which evenly distributes to the Master and Slave. Furthermore, only the Master is able to write, but both instances are able to read. The master's queries are replicated on the slave. Furthermore, sessions were kept by keeping a cookie of the backend server that holds the connection and "sticking" that client to that server.

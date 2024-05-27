@@ -4,15 +4,27 @@
     <meta charset="UTF-8">
     <title>My Fablix Search Engine</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.devbridge-autocomplete/1.4.11/jquery.autocomplete.min.js"></script>
-    <link rel="stylesheet" href="search_engine.css">
+    <link rel="stylesheet" href="Asset/search_engine.css">
 </head>
 <body>
-    <div class="container">
-        <input type="text" name="hero" id="autocomplete"
-               class="autocomplete-searchbox form-control"
-               placeholder="Search for movies..."/>
+    <div id="searchBar">
+        <form id="searchForm" method="GET" action="./movies.html">
+            <div id="title-container">
+                <input type="text" id="title" name="title" placeholder="Search for title...">
+            </div>
+            <div>
+                <input type="text" id="year" name="year" placeholder="Search for year...">
+            </div>
+            <div>
+                <input type="text" id="director" name="director" placeholder="Search for director...">
+            </div>
+            <div>
+                <input type="text" id="star" name="star" placeholder="Search for star...">
+            </div>
+            <div>
+                <input type="submit" value="Search" >
+            </div>
+        </form>
     </div>
-    <script src="search_engine.js"></script>
 </body>
 </html>

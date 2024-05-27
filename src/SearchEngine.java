@@ -33,11 +33,11 @@ public class SearchEngine extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (Connection conn = dataSource.getConnection()){
             JsonArray jsonArray = new JsonArray();
-            String queryTitle = request.getParameter("query");
-            queryTitle = queryTitle.replace(" ", "* ");
-            queryTitle += "*";
-            int dist = (request.getParameter("query").length()+1)/2;
-            String sqlQuery = "SELECT id, title FROM movies WHERE (MATCH (title) AGAINST ('" + queryTitle + "' IN BOOLEAN MODE) OR title LIKE \"%" + request.getParameter("query") + "%\" OR edth(title, \"" + request.getParameter("query") + "\", " + dist +"));";
+            String queryTitle = request.getParameter("query").replace(" ", "* ") + "*";
+            int dist = (queryTitle.length() + 1) / 2;
+            String sqlQuery = "SELECT id, title FROM movies WHERE (MATCH (title) AGAINST ('" + queryTitle + "' IN BOOLEAN MODE) " +
+                    "OR title LIKE '%" + queryTitle + "%' " +
+                    "OR edth(title, '" + queryTitle + "', " + dist + "));";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
             ResultSet resultSet = statement.executeQuery();
 

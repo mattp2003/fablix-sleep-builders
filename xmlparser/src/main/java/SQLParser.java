@@ -79,10 +79,9 @@ public class SQLParser {
             System.out.println(duplicateStars + " duplicate stars");
             System.out.println(duplicateMovies + " duplicate movies");
             System.out.println(inconsistentStars + " inconsistent stars");
-            //System.out.println(inconsistentMovies + " inconsistent movies");
         }
         catch (Exception e){
-            //System.out.println(e);
+            System.out.println(e);
             e.printStackTrace();
         }
     }

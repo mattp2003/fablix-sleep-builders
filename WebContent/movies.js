@@ -156,7 +156,6 @@ let url = "api/movies"
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
-    // url: "/api/movies" + ,
     url: url + window.location.search,
     success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
@@ -198,7 +197,6 @@ function sortMovies(sortBy, sortOrder) {
     jQuery.ajax({
         dataType: "json", // Setting return data type
         method: "GET", // Setting request method
-        // url: "/api/movies" + ,
         url: "api/movies?" + params.toString(),
         success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
@@ -213,7 +211,6 @@ document.getElementById('recordsPerPage').addEventListener('change', function() 
     jQuery.ajax({
         dataType: "json", // Setting return data type
         method: "GET", // Setting request method
-        // url: "/api/movies" + ,
         url: "api/movies?" + params.toString(),
         success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
     });
@@ -228,7 +225,6 @@ function goToNextPage() {
         jQuery.ajax({
             dataType: "json", // Setting return data type
             method: "GET", // Setting request method
-            // url: "/api/movies" + ,
             url: "api/movies?" + params.toString(),
             success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
         });
@@ -244,7 +240,6 @@ function goToPreviousPage() {
         jQuery.ajax({
             dataType: "json", // Setting return data type
             method: "GET", // Setting request method
-            // url: "/api/movies" + ,
             url: "api/movies?" + params.toString(),
             success: (resultData) => handleMovieResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
         });

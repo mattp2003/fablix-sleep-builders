@@ -16,11 +16,10 @@ CREATE TABLE stars (
 );
 
 CREATE TABLE stars_in_movies (
-    starId VARCHAR(10) DEFAULT '' UNIQUE,
-    movieId VARCHAR(10) DEFAULT '' UNIQUE,
+    starId VARCHAR(10) DEFAULT '',
+    movieId VARCHAR(10) DEFAULT '',
     FOREIGN KEY (starId) REFERENCES stars(id),
-    FOREIGN KEY (movieId) REFERENCES movies(id),
-    UNIQUE (starId, movieId)
+    FOREIGN KEY (movieId) REFERENCES movies(id)
 );
 
 CREATE TABLE genres (

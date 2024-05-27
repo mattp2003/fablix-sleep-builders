@@ -1,27 +1,58 @@
-Demo URL: [https://drive.google.com/file/d/1U4qNZfuiP4qTIoB8xfqNh45BZ2EZ6rUN/view](https://drive.google.com/file/d/19ZWa7a4FkoVHLt0TuJClKqXtnmTwggJJ/view?usp=sharing)
+- # General
+    - #### Team#: 29
+    
+    - #### Names: William Chu, Matthew Phan
+    
+    - #### Project 5 Video Demo Link:
 
-Contributions:
+    - #### Instruction of deployment:
 
-William:
-XML parser
+    - #### Collaborations and Work Distribution:
+      - William: AWS  Fuzzy Search
+      - Matthew: Full text search, recording
 
-Matthew:
-Employee dashboard 
 
-Files with Prepared Statement:
-- Dashboard.java
-- EmployeeLogin.java
-- Genre.java
-- Genres.java
-- Login.java
-- Movie.java
-- Movies.java
-- Pay.java
-- SingleStarServlet.java
-- Stars.java
+- # Connection Pooling
+    - #### Include the filename/path of all code/configuration files in GitHub of using JDBC Connection Pooling.
+    Dashboard.java
+    EmployeeLogin.java
+    Genre.java
+    Genres.java
+    Login.java
+    Movie.java
+    Movies.java
+    Pay.java
+    SingleStarServlet.java
+    Stars.java
+    SearchEngine.java
+    
+    - #### Explain how Connection Pooling is utilized in the Fabflix code.
+    Connection pooling allows us to not waste connections to our MySQL server, as we use an already existing connection. This would decrease our creation of new connections, which would waste resources.
+    
+    - #### Explain how Connection Pooling works with two backend SQL.
+    Each backend will have a separate connection pool, which allows us to distribute the requests evenly, and ensures that resources will be allocated and in an efficient manner that distributes it properly. 
 
-Optimizations:
-1. Order of file parsing. First parsed actors file, to add as many actors as possible, as this file has the least conflicts. Followed by movies, which also has minimal relational inconsistencies. By saving the casts for last, we are able to skip requerying which leads us into the next optimization, we don't have to repeat and requery every actor/movie for every entry of the cast.
-2. Saving actors and movies to hashmap. Since many missing entries are repeated, these can be skipped without requerying into the database to check if they are missing. Since all actors and movies were already added previously, no actors will be intentionally skipped, allowing us to skip around 6000 queries of missing data.
-3. Load all actors and movies in a query, to do all existance checking for foreign keys without IO with SQL server.
-4. Batching the files to minimize IO with SQL server
+- # Master/Slave
+    - #### Include the filename/path of all code/configuration files in GitHub of routing queries to Master/Slave SQL.
+
+    - #### How read/write requests were routed to Master/Slave SQL?
+    
+
+- # JMeter TS/TJ Time Logs
+    - #### Instructions of how to use the `log_processing.*` script to process the JMeter logs.
+
+
+- # JMeter TS/TJ Time Measurement Report
+
+| **Single-instance Version Test Plan**          | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
+|------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
+| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 3: HTTPS/10 threads                       | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 4: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+
+| **Scaled Version Test Plan**                   | **Graph Results Screenshot** | **Average Query Time(ms)** | **Average Search Servlet Time(ms)** | **Average JDBC Time(ms)** | **Analysis** |
+|------------------------------------------------|------------------------------|----------------------------|-------------------------------------|---------------------------|--------------|
+| Case 1: HTTP/1 thread                          | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 2: HTTP/10 threads                        | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |
+| Case 3: HTTP/10 threads/No connection pooling  | ![](path to image in img/)   | ??                         | ??                                  | ??                        | ??           |

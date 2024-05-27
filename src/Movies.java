@@ -45,7 +45,6 @@ public class Movies extends HttpServlet {
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
         JsonObject JSONresult = new JsonObject();
-
         // Get a connection from dataSource and let resource manager close the connection after usage.
         try (Connection conn = dataSource.getConnection()) {
             //load parameters from history
@@ -106,13 +105,14 @@ public class Movies extends HttpServlet {
             }
             String requestSearchTitle = request.getParameter("title");
             String queryTitle = "*";
+            int dist = 0;
             if (requestSearchTitle != null && !requestSearchTitle.trim().isEmpty()){
-                searchTitle = requestSearchTitle;
-                queryTitle = searchTitle;
+                searchTitle = requestSearchTitle.strip();
+                queryTitle = searchTitle.strip();
                 queryTitle = queryTitle.replace(" ", "* ");
                 queryTitle += "*";
+                dist = (searchTitle.length()+1)/2;
             }
-            int dist = (searchTitle.length()+1)/2;
             String requestSearchYear = request.getParameter("year");
             if (requestSearchYear != null && !requestSearchYear.trim().isEmpty()){
                 searchYear = requestSearchYear;
@@ -283,7 +283,6 @@ public class Movies extends HttpServlet {
             response.setStatus(200);
 
         } catch (Exception e) {
-
             // Write error message JSON object to output
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("errorMessage", e.getMessage());

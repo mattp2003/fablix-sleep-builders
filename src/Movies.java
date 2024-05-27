@@ -107,8 +107,8 @@ public class Movies extends HttpServlet {
             String queryTitle = "*";
             int dist = 0;
             if (requestSearchTitle != null && !requestSearchTitle.trim().isEmpty()){
-                searchTitle = requestSearchTitle;
-                queryTitle = searchTitle;
+                searchTitle = requestSearchTitle.strip();
+                queryTitle = searchTitle.strip();
                 queryTitle = queryTitle.replace(" ", "* ");
                 queryTitle += "*";
                 dist = (searchTitle.length()+1)/2;

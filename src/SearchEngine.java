@@ -33,12 +33,27 @@ public class SearchEngine extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try (Connection conn = dataSource.getConnection()){
             JsonArray jsonArray = new JsonArray();
-            String queryTitle = request.getParameter("query").replace(" ", "* ") + "*";
+            String queryTitle = request.getParameter("query");
             int dist = (queryTitle.length() + 1) / 2;
-            String sqlQuery = "SELECT id, title FROM movies WHERE (MATCH (title) AGAINST ('" + queryTitle + "' IN BOOLEAN MODE) " +
-                    "OR title LIKE '%" + queryTitle + "%' " +
-                    "OR edth(title, '" + queryTitle + "', " + dist + "));";
+            String sqlQuery = "SELECT id, title, " +
+                    "MATCH (title) AGAINST (? IN BOOLEAN MODE) as relevance " +
+                    "FROM movies " +
+                    "WHERE (MATCH (title) AGAINST (? IN BOOLEAN MODE) " +
+                    "OR title LIKE ? " +
+                    "OR edth(title, ?, ?)) " +
+                    "ORDER BY CASE " +
+                    "WHEN title LIKE ? THEN 0 " +
+                    "WHEN title LIKE ? THEN 1 " +
+                    "ELSE 2 END, " +
+                    "relevance DESC;";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
+            statement.setString(1, queryTitle + '*');
+            statement.setString(2, queryTitle + '*');
+            statement.setString(3, '%' + queryTitle + '%');
+            statement.setString(4, queryTitle);
+            statement.setInt(5, dist);
+            statement.setString(6, queryTitle + " %");
+            statement.setString(7, "% " + queryTitle + '%');
             ResultSet resultSet = statement.executeQuery();
 
             int returnedMovies = 0;
@@ -49,7 +64,6 @@ public class SearchEngine extends HttpServlet {
                 ++returnedMovies;
             }
             String results = jsonArray.toString();
-            System.out.println(results);
             response.getWriter().write(results);
         } catch (Exception e) {
             System.out.println(e);

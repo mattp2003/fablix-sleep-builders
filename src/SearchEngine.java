@@ -34,7 +34,7 @@ public class SearchEngine extends HttpServlet {
         try (Connection conn = dataSource.getConnection()){
             JsonArray jsonArray = new JsonArray();
             String queryTitle = request.getParameter("query");
-            int dist = (queryTitle.length() + 1) / 3;
+            int dist = (queryTitle.length() + 1) / 4;
             String sqlQuery = "SELECT id, title, " +
                     "MATCH (title) AGAINST (? IN BOOLEAN MODE) as relevance " +
                     "FROM movies " +
@@ -42,9 +42,10 @@ public class SearchEngine extends HttpServlet {
                     "OR title LIKE ? " +
                     "OR edth(title, ?, ?)) " +
                     "ORDER BY CASE " +
-                    "WHEN title LIKE ? THEN 0 " +
+                    "WHEN title = ? THEN 0 " +
                     "WHEN title LIKE ? THEN 1 " +
-                    "ELSE 2 END, " +
+                    "WHEN title LIKE ? THEN 2 " +
+                    "ELSE 3 END, " +
                     "relevance DESC;";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
             statement.setString(1, queryTitle + '*');
@@ -52,8 +53,9 @@ public class SearchEngine extends HttpServlet {
             statement.setString(3, '%' + queryTitle + '%');
             statement.setString(4, queryTitle);
             statement.setInt(5, dist);
-            statement.setString(6, queryTitle + " %");
-            statement.setString(7, "% " + queryTitle + '%');
+            statement.setString(6, queryTitle);
+            statement.setString(7, queryTitle + " %");
+            statement.setString(8, "% " + queryTitle + '%');
             ResultSet resultSet = statement.executeQuery();
 
             int returnedMovies = 0;

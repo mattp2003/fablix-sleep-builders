@@ -34,7 +34,7 @@ public class SearchEngine extends HttpServlet {
         try (Connection conn = dataSource.getConnection()){
             JsonArray jsonArray = new JsonArray();
             String queryTitle = request.getParameter("query");
-            int dist = (queryTitle.length() + 1) / 3;
+            int dist = (queryTitle.length() + 1) / 4;
             String sqlQuery = "SELECT id, title, " +
                     "MATCH (title) AGAINST (? IN BOOLEAN MODE) as relevance " +
                     "FROM movies " +

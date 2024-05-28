@@ -111,7 +111,7 @@ public class Movies extends HttpServlet {
                 queryTitle = searchTitle.strip();
                 queryTitle = queryTitle.replace(" ", "* ");
                 queryTitle += "*";
-                dist = (searchTitle.length()+1)/2;
+                dist = (searchTitle.length()+1)/3;
             }
             String requestSearchYear = request.getParameter("year");
             if (requestSearchYear != null && !requestSearchYear.trim().isEmpty()){

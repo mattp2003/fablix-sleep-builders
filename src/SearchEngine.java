@@ -34,7 +34,7 @@ public class SearchEngine extends HttpServlet {
         try (Connection conn = dataSource.getConnection()){
             JsonArray jsonArray = new JsonArray();
             String queryTitle = request.getParameter("query").replace(" ", "* ") + "*";
-            int dist = (queryTitle.length() + 1) / 2;
+            int dist = (queryTitle.length() + 1) / 3;
             String sqlQuery = "SELECT id, title FROM movies WHERE (MATCH (title) AGAINST ('" + queryTitle + "' IN BOOLEAN MODE) " +
                     "OR title LIKE '%" + queryTitle + "%' " +
                     "OR edth(title, '" + queryTitle + "', " + dist + "));";

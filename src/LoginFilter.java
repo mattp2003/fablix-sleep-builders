@@ -30,7 +30,7 @@ public class LoginFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         System.out.println("LoginFilter: " + httpRequest.getContextPath());
-        //System.out.println(getBaseUrl(httpRequest));
+        System.out.println(getBaseUrl(httpRequest));
 
         // Check if this URL is allowed to access without logging in
         if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
@@ -50,13 +50,13 @@ public class LoginFilter implements Filter {
 
             System.out.println("You are accessing: " + httpRequest.getRequestURI());
             //accessing employee only paths
-            if (httpRequest.getRequestURI().contains(httpRequest.getRequestURI() + "_dashboard")){
+            if (httpRequest.getRequestURI().contains("_dashboard")){
                 if (isEmployee){
                     chain.doFilter(request, response);
                 }
                 else{
                     System.out.println("You are a user and attempting to access the dashboard, redirecting ... ");
-                    httpResponse.sendRedirect(httpRequest.getRequestURI());
+                    httpResponse.sendRedirect(httpRequest.getContextPath() + "/index.html");
                 }
             }
             else{

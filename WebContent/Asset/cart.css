@@ -1,0 +1,74 @@
+/* General Styles */
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: #5c8b6d;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    color: #FBFADA;
+}
+
+h2 {
+    padding: 20px;
+    text-align: center;
+    color: #DAC0A3;
+}
+
+
+/* Table Styles */
+table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+}
+
+thead {
+    background-color: #2f4737;
+    color: #f0d8be;
+    border-color: black;
+}
+
+th, td {
+    padding: 15px;
+    text-align: center;
+    border: 1px solid #688d6d;
+    width: 10%;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+/* Button Styles */
+.checkout {
+    display: block;
+    width: 200px;
+    margin: 30px auto;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #2b4132;
+    color: #DAC0A3;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.checkout:hover {
+    background-color: #4d5349;
+}
+
+/* Total Price Styles */
+#total {
+    text-align: center;
+    font-size: 2em;
+    color: #DAC0A3;
+    margin-top: 10px;
+}

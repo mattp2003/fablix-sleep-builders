@@ -1,0 +1,27 @@
+nav {
+    background-color: #12372A;
+    color: #FBFADA;
+    position: absolute;
+}
+
+.navbar-brand{
+    color: #FBFADA;
+}
+.navbar-brand:hover{
+    color: #a7a691;
+}
+.nav-link{
+    color: #FBFADA;
+}
+.nav-link:hover{
+    color: #a7a691;
+}
+
+.navbar-toggler{
+    background-color: #20634b;
+    color: #FBFADA;
+    border-color: #FBFADA;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+}
+
+

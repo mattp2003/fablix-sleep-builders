@@ -1,0 +1,75 @@
+/* General Styles */
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: #5c8b6d;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #343a40;
+    margin-top: 20px;
+}
+
+h2 {
+    margin-top: 10px;
+    color: #495057;
+}
+
+b{
+    color: #8eeeb1;
+}
+
+/* Navbar Styles */
+.navbar {
+    margin-bottom: 20px;
+}
+
+/* Form Styles */
+#payment-form {
+    width: 50%;
+    margin: 0 auto;
+    background-color: #476952;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+#payment-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+#payment-form input[type="text"],
+#payment-form input[type="date"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+#payment-form input[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #2b4132;
+    color: #73be8b;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#payment-form input[type="submit"]:hover {
+    background-color: #4d5349;
+}
+
+/* Warning Styles */
+#warning {
+    text-align: center;
+    color: red;
+    margin-top: 20px;
+}

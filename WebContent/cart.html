@@ -5,13 +5,14 @@
     <title>Your Cart</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="Asset/movies.css">
+    <link rel="stylesheet" href="Asset/cart.css">
+    <link rel="stylesheet" href="Asset/navbar.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Navigation</a>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="index.html">Navigation</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            +
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav nav-justified w-100">
@@ -65,7 +66,7 @@
 <h2>Total Price:</h2>
 <h1 id="total">0</h1>
 
-<button onclick="location.href='./pay.html'">Proceed to Checkout</button>
+<button class="checkout" onclick="location.href='./pay.html'">Proceed to Checkout</button>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>

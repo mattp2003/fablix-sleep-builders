@@ -2,7 +2,6 @@ let cache_storage = {};
 
 function handleLookup(query, doneCallback) {
     // Check if the query length is at least 3 characters
-    console.log(query.length)
     if (query.length < 3) {
         console.log("Query too short for autocomplete (minimum 3 characters required)");
         return;
@@ -11,6 +10,7 @@ function handleLookup(query, doneCallback) {
     if (query in cache_storage) {
         console.log("Using cached results for query: " + query);
         doneCallback({ suggestions: cache_storage[query] });
+        console.log({ suggestions: cache_storage[query] });
     } else {
         console.log("sending AJAX request to backend Java Servlet");
 
@@ -34,7 +34,7 @@ function handleLookup(query, doneCallback) {
 
 function handleLookupAjaxSuccess(data, query, doneCallback) {
     doneCallback({ suggestions: cache_storage[query] });
-
+    console.log({ suggestions: cache_storage[query] });
 }
 
 function handleSelectSuggestion(suggestion) {

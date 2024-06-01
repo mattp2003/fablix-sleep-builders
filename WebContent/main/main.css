@@ -1,4 +1,5 @@
 body, html {
+    font-family: 'Lato', sans-serif;
     height: 100%;
     margin: 0;
 }
@@ -30,15 +31,15 @@ body, html {
 }
 
 #user-login {
-    background-color: #232946;
+    background-color: #12372A;
 }
 #employee-login {
-    background-color: #b8c1ec; 
+    background-color: #436850; 
 }
 
-#user-login:hover {
-    background-color: #121629; 
-}
 #employee-login:hover {
-    background-color: #eebbc3;
+    background-color: #ADBC9F; 
+}
+#user-login:hover {
+    background-color: #ADBC9F;
 }

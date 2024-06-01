@@ -1,5 +1,9 @@
+nav {
+    position: absolute;
+}
+
 .navbar {
-    background-color: #436850 !important;
+    background-color: #12372A !important;
 
 }
 
@@ -32,7 +36,7 @@
 .navbar-nav .nav-link.active,
 .navbar-nav .nav-link.show,
 .navbar-nav .show>.nav-link {
-    color: #12372A !important; /* Light cream color for active or current link */
+    color: #436850 !important; 
 }
 
 /* Responsive navbar - collapsed links */

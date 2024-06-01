@@ -96,3 +96,4 @@ jQuery.ajax({
     url: "api/genres",
     success: (resultData) => handleGenres(resultData) // Setting callback function to handle data returned successfully by the SingleStarServlet
 });
+

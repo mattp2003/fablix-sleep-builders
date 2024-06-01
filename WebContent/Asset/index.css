@@ -2,14 +2,17 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #12372A !important;
 }
 
 h1 {
     text-align: center;
+    color: #FBFADA !important;
 }
 
 h6 {
     text-align: center;
+    color: #FBFADA !important;
 }
 
 a {
@@ -21,12 +24,12 @@ a:hover {
     text-decoration: underline;
 }
 
-.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+.autocomplete-suggestions { border: 1px solid #436850 !important; background: #436850 !important; overflow: auto; }
 .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
-.autocomplete-selected { background: #F0F0F0; }
-.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+.autocomplete-selected { background: #436850 !important; }
+.autocomplete-suggestions strong { font-weight: normal; color: #FBFADA !important; }
 .autocomplete-group { padding: 2px 5px; }
-.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+.autocomplete-group strong { display: block; border-bottom: 1px solid #436850 !important; }
 
 .container {
     width: 100%;
@@ -41,10 +44,20 @@ a:hover {
     height: 50px;
     margin-bottom: 20px;
     box-sizing: border-box;
+    background-color: #FBFADA !important;
+}
+
+.autocomplete-searchbox::placeholder {
+    color: #12372A !important;
+    opacity: 1 !important;
 }
 
 .genres {
     text-align: center;
+}
+
+.genres p {
+    color: #FBFADA;
 }
 
 .genres ul {
@@ -55,11 +68,18 @@ a:hover {
 
 .genres ul li {
     display: inline-block;
-    background-color: #f1f1f1;
     color: #333;
     padding: 5px 10px;
     margin: 5px;
     border-radius: 5px;
+}
+
+.genres ul li:hover {
+    background-color: #ADBC9F;
+}
+
+.genres ul li a {
+    color: #FBFADA;
 }
 
 .genres ul li:last-child {

@@ -30,8 +30,9 @@ public class Login extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json"); // Response mime type
         JsonObject responseJsonObject = new JsonObject();
-
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
+
+
         try {
             RecaptchaVerifyUtils.verify(gRecaptchaResponse);
 
@@ -44,12 +45,14 @@ public class Login extends HttpServlet {
         }
 
 
+
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         boolean isEmployee = request.getParameter("isEmployee").equals("true");
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
+
 
         try (Connection conn = dataSource.getConnection()){
             String query;
@@ -58,6 +61,7 @@ public class Login extends HttpServlet {
             } else {
                 query = "SELECT password from customers where email=?;";
             }
+
 
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, email);

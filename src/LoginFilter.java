@@ -80,15 +80,14 @@ public class LoginFilter implements Filter {
     public void init(FilterConfig fConfig) {
         allowedURIs.add("main/main.html");
         allowedURIs.add("main/main.css");
-        allowedURIs.add( "main/main.js");
+        allowedURIs.add("main/main.js");
 
         allowedURIs.add("login.html");
         allowedURIs.add("login.js");
         allowedURIs.add("Asset/login.css");
-        allowedURIs.add("api/login");
 
         allowedURIs.add("_dashboard/login.html");
-        allowedURIs.add("api/employeeLogin");
+        allowedURIs.add("api/login");
     }
 
     public void destroy() {

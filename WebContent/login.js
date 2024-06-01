@@ -1,5 +1,5 @@
 let login_form = $("#login_form");
-let isEmpLogin = document.getElementById('employeeLogin')
+let isEmpLogin = document.getElementById('employeeLogin').value;
 /**
  * Handle the data returned by LoginServlet
  * @param resultDataString jsonObject
@@ -13,10 +13,10 @@ function handleLoginResult(resultDataString) {
     // If login succeeds, it will redirect the user to index.html
     if (resultDataJson["status"] === "success") {
         sessionStorage.setItem('isEmployee', resultDataJson["isEmployee"]);
-        if (isEmpLogin) {
+        if (isEmpLogin === "true") {
             window.location.replace("../index.html");
         } else {
-            window.location.replace("index.html");
+            window.location.replace("./index.html");
         }
     } else {
         // If login fails, the web page will display
@@ -33,7 +33,6 @@ function handleLoginResult(resultDataString) {
  * @param formSubmitEvent
  */
 function submitLoginForm(formSubmitEvent) {
-    console.log("submit login form");
     /**
      * When users click the submit button, the browser will not direct
      * users to the url defined in HTML form. Instead, it will call this
@@ -41,11 +40,12 @@ function submitLoginForm(formSubmitEvent) {
      */
     formSubmitEvent.preventDefault();
     let apiUrl;
-    if (isEmpLogin) {
-        apiUrl = "../api/login"
+    if (isEmpLogin === "true") {
+        apiUrl = "../api/login";
     } else {
-        apiUrl = "api/login"
+        apiUrl = "./api/login";
     }
+    console.log(apiUrl);
     $.ajax(
         apiUrl, {
             method: "POST",

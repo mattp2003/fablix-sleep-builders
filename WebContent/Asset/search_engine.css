@@ -1,0 +1,21 @@
+#searchForm {
+    display: flex; 
+    flex-direction: row;
+    padding: 10px;
+    margin: 10px;
+}
+
+#searchBar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#searchBar input, #searchBar button {
+    padding: 5px;
+}
+
+#title-container{
+    display: flex;
+    flex-direction: column;
+}

@@ -1,7 +1,7 @@
 /* General Styles */
 body {
     font-family: 'Lato', sans-serif;
-    background-color: #5c8b6d;
+    background-color: #12372A;
     margin: 0;
     padding: 0;
 }
@@ -54,7 +54,7 @@ tbody tr:nth-child(odd) {
     padding: 10px;
     font-size: 16px;
     background-color: #2b4132;
-    color: #DAC0A3;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;

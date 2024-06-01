@@ -1,24 +1,23 @@
 /* General Styles */
 body {
     font-family: 'Lato', sans-serif;
-    background-color: #5c8b6d;
+    background-color: #12372A;
     margin: 0;
     padding: 0;
 }
-
 h1, h2 {
     text-align: center;
-    color: #343a40;
+    color: #659e79;
     margin-top: 20px;
 }
 
 h2 {
     margin-top: 10px;
-    color: #495057;
+    color: #659e79;
 }
 
 b{
-    color: #8eeeb1;
+    color: #436850;
 }
 
 /* Navbar Styles */
@@ -30,7 +29,7 @@ b{
 #payment-form {
     width: 50%;
     margin: 0 auto;
-    background-color: #476952;
+    background-color: #ADBC9F;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -56,7 +55,7 @@ b{
     width: 100%;
     padding: 10px;
     background-color: #2b4132;
-    color: #73be8b;
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;

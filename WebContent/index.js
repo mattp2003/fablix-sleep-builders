@@ -64,3 +64,35 @@ $('#autocomplete').keypress(function(event) {
         handleNormalSearch($('#autocomplete').val())
     }
 })
+
+function handleStarts() {
+    const starts = "0123456789abcdefghijklmnopqrstuvwxyz*";
+
+    for (let i = 0; i < starts.length; i++) {
+        let listItem = $("<li>");
+        let link = $("<a>").attr("href", "./movies.html?startsWith=" + starts[i]).text(starts[i]);
+        listItem.append(link);
+        $("#starts-body").append(listItem);
+    }
+}
+
+handleStarts();
+
+function handleGenres(data){
+    let genres = data["genres"]
+    let list = jQuery("#genres-body");
+
+    for (let i = 0; i < genres.length; i++) {
+        let listItem = $("<li>");
+        let link = $("<a>").attr("href", "./movies.html?genre=" + genres[i]).text(genres[i]);
+        listItem.append(link);
+        list.append(listItem);
+    }
+}
+
+jQuery.ajax({
+    dataType: "json",  // Setting return data type
+    method: "GET",// Setting request method
+    url: "api/genres",
+    success: (resultData) => handleGenres(resultData) // Setting callback function to handle data returned successfully by the SingleStarServlet
+});

@@ -34,6 +34,10 @@ public class SearchEngine extends HttpServlet {
         try (Connection conn = dataSource.getConnection()){
             JsonArray jsonArray = new JsonArray();
             String queryTitle = request.getParameter("query");
+            // Split the queryTitle into individual keywords
+            String[] keywords = queryTitle.split("\\s+");
+            // Prepend each keyword with the '+' operator
+            String searchQuery = "+" + String.join(" +", keywords);
             int dist = (queryTitle.length() + 1) / 4;
             String sqlQuery = "SELECT id, title, " +
                     "MATCH (title) AGAINST (? IN BOOLEAN MODE) as relevance " +
@@ -48,8 +52,8 @@ public class SearchEngine extends HttpServlet {
                     "ELSE 3 END, " +
                     "relevance DESC;";
             PreparedStatement statement = conn.prepareStatement(sqlQuery);
-            statement.setString(1, queryTitle + '*');
-            statement.setString(2, queryTitle + '*');
+            statement.setString(1, searchQuery);
+            statement.setString(2, searchQuery);
             statement.setString(3, '%' + queryTitle + '%');
             statement.setString(4, queryTitle);
             statement.setInt(5, dist);

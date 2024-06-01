@@ -11,8 +11,7 @@ import java.util.ArrayList;
  */
 @WebFilter(filterName = "LoginFilter", urlPatterns = "/*")
 public class LoginFilter implements Filter {
-    String base = "/cs122b-sleep-builders/";
-    String base2 = "/cs122b_sleep_builders_war/";
+    String contextPath;
     private final ArrayList<String> allowedURIs = new ArrayList<>();
 
     String getBaseUrl(HttpServletRequest request) {
@@ -31,6 +30,8 @@ public class LoginFilter implements Filter {
 
         System.out.println("LoginFilter: " + httpRequest.getContextPath());
         System.out.println(getBaseUrl(httpRequest));
+
+        contextPath = httpRequest.getContextPath();
 
         // Check if this URL is allowed to access without logging in
         if (this.isUrlAllowedWithoutLogin(httpRequest.getRequestURI())) {
@@ -71,31 +72,22 @@ public class LoginFilter implements Filter {
          Always allow your own login related requests(html, js, servlet, etc..)
          You might also want to allow some CSS files, etc..
          */
-        return allowedURIs.contains(requestURI);
+        String path = requestURI.substring(contextPath.length()+1);
+        System.out.println(path);
+        return allowedURIs.contains(path);
     }
 
     public void init(FilterConfig fConfig) {
-        allowedURIs.add(base + "main/main.html");
-        allowedURIs.add(base + "main/main.css");
-        allowedURIs.add(base + "main/main.js");
+        allowedURIs.add("main/main.html");
+        allowedURIs.add("main/main.css");
+        allowedURIs.add("main/main.js");
 
-        allowedURIs.add(base + "login.html");
-        allowedURIs.add(base + "login.js");
-        allowedURIs.add(base + "api/login");
+        allowedURIs.add("login.html");
+        allowedURIs.add("login.js");
+        allowedURIs.add("Asset/login.css");
 
-        allowedURIs.add(base + "_dashboard/login.html");
-        allowedURIs.add(base + "api/employeeLogin");
-
-        allowedURIs.add(base2 + "main/main.html");
-        allowedURIs.add(base2 + "main/main.css");
-        allowedURIs.add(base2 + "main/main.js");
-
-        allowedURIs.add(base2 + "login.html");
-        allowedURIs.add(base2 + "login.js");
-        allowedURIs.add(base2 + "api/login");
-
-        allowedURIs.add(base2 + "_dashboard/login.html");
-        allowedURIs.add(base2 + "api/employeeLogin");
+        allowedURIs.add("_dashboard/login.html");
+        allowedURIs.add("api/login");
     }
 
     public void destroy() {

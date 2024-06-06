@@ -19,7 +19,7 @@ FROM tomcat:10-jdk11
 WORKDIR /app
 
 # copy the war file what we have generated earlier into the tomcat webapps folder inside the container
-COPY --from=builder /app/target/cs122b-s24-sleep-builders.war /usr/local/tomcat/webapps/cs122b-s24-sleep-builders.war
+COPY --from=builder /app/target/cs122b-sleep-builders.war /usr/local/tomcat/webapps/cs122b-sleep-builders.war
 
 # open the 8080 port of the container, so that outside requests can reach the tomcat server
 EXPOSE 8080

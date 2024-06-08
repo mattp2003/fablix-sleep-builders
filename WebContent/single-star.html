@@ -17,15 +17,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="Asset/single-star.css">
+    <link rel="stylesheet" href="Asset/navbar.css">
     <title>Single Star</title>
 </head>
 <body>
 <div style="position: fixed; top: 0; right: 0; padding: 10px;">
     <a href="logout" style="text-decoration: none; color: white; background-color: #f44336; padding: 8px 15px; border-radius: 5px; font-size: 16px;">Logout</a>
 </div>
-<h1 style="margin-top:30px;">Single Star Page</h1>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Navigation</a>
+    <a class="navbar-brand" href="Asset/logo.png">Navigation</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -41,17 +41,27 @@
                 <a class="nav-link" href="stars.html">Stars</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="./_dashboard/index.html" style="display: none">Dashboard</a>
+                <a class="nav-link" href="search_engine.html">Browse</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="./_dashboard/star.html" style="display: none">Add New Star</a>
+                <a class="nav-link" id="dashboardLink" href="./_dashboard/index.html" style="display: none">Dashboard</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="./_dashboard/movie.html" style="display: none">Add New Movie</a>
+                <a class="nav-link" id="addStarLink" href="./_dashboard/star.html" style="display: none">Add New Star</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="addMovieLink" href="./_dashboard/movie.html" style="display: none">Add New Movie</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="./cart.html">Cart</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="logout">Sign Out</a>
             </li>
         </ul>
     </div>
 </nav>
+<h1 style="margin-top:30px;">Single Star Page</h1>
 
 <!-- H3 body is left empty here, will be populated with the data retrieved with single-star.js -->
 <!-- single-star.js will find this html element by it's id "star_info" -->

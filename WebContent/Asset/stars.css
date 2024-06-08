@@ -1,9 +1,11 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Lato', sans-serif;
+    background-color:#12372A !important;
 }
 
 h1 {
     text-align: center;
+    color: #FBFADA !important;
 }
 
 table {
@@ -28,4 +30,57 @@ tr:nth-child(even) {
 
 tr:hover {
     background-color: #ddd;
+}
+
+.fixed-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+}
+
+.fixed-header .btn {
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+main {
+    width: 100%;
+    max-width: 1000px;
+    padding: 20px;
+    margin: 0 auto;
+    margin-top: 70px; /* Adjusted to account for the fixed header */
+    box-sizing: border-box;
+}
+
+.tables-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.tables-container .table {
+    width: 48%; /* Ensure tables are side-by-side and take up full width */
+}
+
+#genre_body {
+    width: 50px;
+}
+
+.dropdown-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+.dropdown-container label {
+    margin-right: 10px;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
 }

@@ -80,7 +80,7 @@ public class Login extends HttpServlet {
                     String queriedPassword = rs.getString("password");
                     loginSuccess = password.equals(queriedPassword);
                 } else {
-                    loginSuccess = VerifyPassword.verifyCredentials(email, password);
+                    loginSuccess = VerifyPassword.verifyCredentials(email, password, conn);
                 }
 
                 if (loginSuccess) {

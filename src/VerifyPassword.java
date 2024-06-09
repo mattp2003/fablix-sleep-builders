@@ -18,14 +18,9 @@ public class VerifyPassword {
 	 * 
 	 */
 
-	public static boolean verifyCredentials(String email, String password) throws Exception {
-		
-		String loginUser = "mytestuser";
-		String loginPasswd = "My6$Password";
-		String loginUrl = "jdbc:mysql://localhost:3306/moviedb";
+	public static boolean verifyCredentials(String email, String password, Connection conn) throws Exception {
 
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
-		Connection connection = DriverManager.getConnection(loginUrl, loginUser, loginPasswd);
+		Connection connection = conn;
 		Statement statement = connection.createStatement();
 
 		String query = String.format("SELECT * from customers where email='%s'", email);

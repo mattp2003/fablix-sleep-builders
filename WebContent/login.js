@@ -46,6 +46,7 @@ function submitLoginForm(formSubmitEvent) {
         apiUrl = "./api/login";
     }
     console.log(apiUrl);
+    console.log(login_form.serialize());
     $.ajax(
         apiUrl, {
             method: "POST",

@@ -32,7 +32,16 @@ public class Login extends HttpServlet {
         JsonObject responseJsonObject = new JsonObject();
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
 
-
+        //dummy login
+        request.getSession().setAttribute("user", new User("tester"));
+        request.getSession().setAttribute("isEmployee", false);
+        responseJsonObject.addProperty("isEmployee", false);
+        responseJsonObject.addProperty("status", "success");
+        responseJsonObject.addProperty("message", "success");
+        response.getWriter().write(responseJsonObject.toString());
+        return;
+        //end dummy login
+        /**
         try {
             RecaptchaVerifyUtils.verify(gRecaptchaResponse);
 
@@ -96,6 +105,7 @@ public class Login extends HttpServlet {
                 }
             }
             response.getWriter().write(responseJsonObject.toString());
+
         } catch (Exception e) {
 
             // Write error message JSON object to output
@@ -109,6 +119,6 @@ public class Login extends HttpServlet {
         } finally {
             out.close();
         }
-
+        **/
     }
 }

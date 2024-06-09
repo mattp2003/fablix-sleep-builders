@@ -99,6 +99,7 @@ public class Login extends HttpServlet {
         } catch (Exception e) {
 
             // Write error message JSON object to output
+            System.out.println(e.getStackTrace());
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("errorMessage", e.getStackTrace().toString());
             out.write(jsonObject.toString());

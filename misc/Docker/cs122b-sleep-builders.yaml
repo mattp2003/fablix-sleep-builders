@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: cs122b-sleep-builders-container # Names the container within the pod as "murphy-movies-container".
-          image: mattphan2003/cs122b-s24-sleep-builders:v2 # Uses the Docker image "https://hub.docker.com/r/chenliteaching/cs122b-p5-murphy" for the container.
+          image: williamzchu122b/cs122b-s24-sleep-builders:v1 # Uses the Docker image "https://hub.docker.com/r/chenliteaching/cs122b-p5-murphy" for the container.
           ports:
             - name: http
               containerPort: 8080 # Exposes port 8080 of the container.

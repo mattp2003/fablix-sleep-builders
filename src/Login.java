@@ -61,7 +61,7 @@ public class Login extends HttpServlet {
             } else {
                 query = "SELECT password from customers where email=?;";
             }
-
+            System.out.println(query);
 
             PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, email);
@@ -82,7 +82,6 @@ public class Login extends HttpServlet {
                 } else {
                     loginSuccess = VerifyPassword.verifyCredentials(email, password, conn);
                 }
-
                 if (loginSuccess) {
                     request.getSession().setAttribute("user", new User(email));
                     request.getSession().setAttribute("isEmployee", isEmployee);

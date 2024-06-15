@@ -32,7 +32,7 @@ public class Login extends HttpServlet {
         JsonObject responseJsonObject = new JsonObject();
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
 
-        /*
+
         try {
             RecaptchaVerifyUtils.verify(gRecaptchaResponse);
 
@@ -43,7 +43,6 @@ public class Login extends HttpServlet {
             response.getWriter().write(responseJsonObject.toString());
             return;
         }
-        */
 
 
         String email = request.getParameter("email");

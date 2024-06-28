@@ -1,5 +1,5 @@
 - # General:
-    - #### Collaborators' Names: William Chu, Matthew Phan
+    - #### Collaborators' Names: Matthew Phan and William Chu
     - A movie fablix website that allows users to browse and purchase movies.
 
 - # Description: 

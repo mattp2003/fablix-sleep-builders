@@ -1,14 +1,11 @@
-- # General
-    - #### Team#: 29
-    
-    - #### Names: William Chu, Matthew Phan
-    
-    - #### Project 5 Video Demo Link: https://drive.google.com/file/d/1MgeNcNpr-ngwYeUDQP75N_xBL1BxqPug/view?usp=sharing
+- # General:
+    - #### Collaborators' Names: William Chu, Matthew Phan
+    - A movie fablix website that allows users to browse and purchase movies.
 
-    - #### Collaborations and Work Distribution:
-      - William: Docker, Recording, and JMeter 
-      - Matthew: Kubernetes, AWS, and JMeter
-
-    - #### Throughput Numbers (50 seconds):
-      - 1 Control Plane + 3 Worker nodes + 1 master MySQL pod + 1 slave MySQL pod + 2 Fabflix pods: ~280.3/minute
-      - 1 Control Plane + 4 Worker nodes + 1 master MySQL pod + 1 slave MySQL pod + 3 Fabflix pods: ~300.5/minute
+- # Description: 
+    - This is a project that mainly serves for our practices in Web Application with Java and Database Management (mySQL)
+    - The data is obtained from Stanford's Large Movie Dataset, which can be found at https://ai.stanford.edu/~amaas/data/sentiment
+ 
+- # Updates:
+    - Removed Docker's containers to minimize cost on AWS
+    - Added fuzzy search on main page
